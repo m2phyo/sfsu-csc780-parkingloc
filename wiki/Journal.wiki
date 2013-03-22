@@ -1,4 +1,5 @@
 = Week 1 =
 
-* Understanding the Google Map API V2
-* Trying to make Google Map to work
+
+  * Understanding the Google Map API V2.
+  * Trying to make Google Map to work.
