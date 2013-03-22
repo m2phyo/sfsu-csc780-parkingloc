@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Basic design for the app
 
 = Disclaimer =
 This is a SFSU school project.
