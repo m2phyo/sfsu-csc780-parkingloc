@@ -5,3 +5,7 @@
 
   * Understanding the Google Map API V2.
   * Trying to make Google Map to work.
+
+We are planning to do the following in 2 weeks:
+  # show client & back up communication
+  # launch the app, look for the parking spot near current location or home location.
