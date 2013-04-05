@@ -2,10 +2,19 @@
 
 = Week 1 =
 
+  * Study the Google Map API V2.
+  * Try to make Google Map to work.
 
-  * Understanding the Google Map API V2.
-  * Trying to make Google Map to work.
+= Week 2 =
 
-We are planning to do the following in 2 weeks:
-  # show client & back up communication
-  # launch the app, look for the parking spot near current location or home location.
+  * Truong:
+  # Google Maps works successfully.
+  # Add some marker to the map.
+
+  * Min Min:
+  # Study Google App Engine.
+  # Testing connection to network using Google App Engine.
+
+To do:
+  # Get user current location & add button for Home location.
+  # Get GPS info from file over the Internet.
