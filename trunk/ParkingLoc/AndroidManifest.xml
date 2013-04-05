@@ -5,44 +5,60 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="17"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
     
-    <permission
-        android:name="com.d8n9.packingloc.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-    
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true" />
-    
-    <uses-permission android:name="com.d8n9.packingloc.permission.MAPS_RECEIVE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <permission 
+		android:name="com.d8n9.parkingloc.permission.MAPS_RECEIVE" 
+		android:protectionLevel="signature"></permission>
+	
+	<uses-permission 
+		android:name="com.d8n9.parkingloc.permission.MAPS_RECEIVE"/>	
+	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+
+	<uses-feature
+		android:glEsVersion="0x00020000"
+		android:required="true"/> 
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name="com.d8n9.parkingloc.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-				
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDwoK4RJXI_zvYxrYbCm4VSsMuqwDRGFsA" />
+            android:value="AIzaSyAkt9aRSggD_HKoC8YsxCX7Hy1OfIABS_U"/>
+        
+        <!-- debug key: 	AIzaSyDwoK4RJXI_zvYxrYbCm4VSsMuqwDRGFsA 		-->
+        <!-- release key:	AIzaSyAkt9aRSggD_HKoC8YsxCX7Hy1OfIABS_U 		-->
+        
+        <activity
+            android:name="com.d8n9.parkingloc.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
