@@ -7,11 +7,11 @@
 
 == Week 2 ==
 
-=== Truong ===
+  * *Truong*
   # Google Maps works successfully.
   # Add some marker to the map.
 
-=== Min Min ===
+  * *Min Min*
   # Study Google App Engine.
   # Testing connection to network using Google App Engine.
 
