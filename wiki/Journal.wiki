@@ -19,7 +19,5 @@ To do next week:
   # Demo of Google App Engine.
   # Login screen.
   # Design database.
-
-Later:
   # Get user current location & add button for Home location.
   # Get GPS info from file over the Internet.
