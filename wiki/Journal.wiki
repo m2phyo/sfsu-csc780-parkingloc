@@ -8,12 +8,12 @@
 == Week 2 ==
 
   * *Truong*
-  # Google Maps works successfully.
-  # Add some marker to the map.
+    # Google Maps works successfully.
+    # Add some marker to the map.
 
   * *Min Min*
-  # Study Google App Engine.
-  # Testing connection to network using Google App Engine.
+    # Study Google App Engine.
+    # Testing connection to network using Google App Engine.
 
 To do next week:
   # Demo of Google App Engine.
