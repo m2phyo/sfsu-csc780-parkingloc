@@ -46,7 +46,6 @@ int string common_google_play_services_update_button 0x7f05000c
 int string common_google_play_services_update_text 0x7f050008
 int string common_google_play_services_update_title 0x7f050007
 int string common_signin_button_text_long 0x7f05000d
-int string hello_world 0x7f050013
 int style AppBaseTheme 0x7f080000
 int style AppTheme 0x7f080001
 int[] styleable ButtonBarContainerTheme { 0x7f01000e, 0x7f01000f }
