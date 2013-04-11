@@ -21,3 +21,15 @@ To do next week:
   # Design database.
   # Get user current location & add button for Home location.
   # Get GPS info from file over the Internet.
+
+== Week 3 ==
+
+ * *Min Min*
+   # Set up App Engine Account for Application.
+   # Set up Web Application.
+   # Set up Google Cloud SQL for database and created tables for data.
+   # Still working on communication between the Application and backends.    
+
+ * *Truong*
+   # Login Page.
+   # Still working on getting current location and put the marker on map.
