@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends Activity {
+public class MapActivity extends Activity {
   static final LatLng SFSU = new LatLng(37.721102, -122.476788);
   static final LatLng SPOT1 = new LatLng(37.726548, -122.473327);
   static final LatLng SPOT2 = new LatLng(37.728324, -122.474053);
