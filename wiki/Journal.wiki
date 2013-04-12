@@ -34,7 +34,7 @@ To do next week:
    # Login Page.
    # Still working on getting current location and put the marker on map.
 
-To do next week:
+To do next 2 weeks:
    # UI for Registration, Login, Profile, Update
    # Show available parking spot within the radius of home location.
    # Tab on location and make reservation.
