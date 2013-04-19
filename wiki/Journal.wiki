@@ -49,3 +49,10 @@ To do next 2 weeks:
 - base on home location, querry parking spots around half mile
 - tap on spot, reserver the spot - marked USED in db
 intent to navigate, drive to the spot
+
+== Week 4 ==
+
+   # Set up MySQL Database.
+   # Deployed PHP API for database access through web.
+   # Implemented Java Class in Application for database. 
+   # Still working on communication between the Application and backends.    
