@@ -1,16 +1,10 @@
 package com.d8n9.parkingloc;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends Activity {
   static final LatLng SFSU = new LatLng(37.721102, -122.476788);

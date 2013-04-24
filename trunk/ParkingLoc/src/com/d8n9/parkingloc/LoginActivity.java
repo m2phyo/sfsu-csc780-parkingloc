@@ -1,247 +1,204 @@
 package com.d8n9.parkingloc;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.os.AsyncTask;
-import android.os.Build;
+import com.d8n9.parkingloc.JSONParser;
+
+import com.d8n9.parkingloc.R;
+import com.d8n9.parkingloc.R.id;
+import com.d8n9.parkingloc.R.layout;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 
-/**
- * Activity which displays a login screen to the user, offering registration as
- * well.
- */
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
 public class LoginActivity extends Activity {
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
+	
+	Button logButton;
+	EditText inputName;
+	EditText inputPassword;
+	
+	// Progress Dialog
+	private ProgressDialog pDialog;
+	
+	TextView tv;      // TextView to show the result of MySQL query 
+	String returnString="";   // to store the result of MySQL query after decoding JSON
+	
+	// Creating JSON Parser object
+	JSONParser jParser = new JSONParser();
+	
+	//JSON Response keys
+	private static String KEY_SUCCESS = "success";
+	private static String KEY_MESSAGE = "message";
+	private static String KEY_NAME = "user_name";
+	private static String KEY_TAG = "login";
+	private static String KEY_USER = "user";
+	private static String KEY_ID = "user_id";
 
-	/**
-	 * The default email to populate the email field with.
-	 */
-	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
-
-	/**
-	 * Keep track of the login task to ensure we can cancel it if requested.
-	 */
-	private UserLoginTask mAuthTask = null;
-
-	// Values for email and password at the time of the login attempt.
-	private String mEmail;
-	private String mPassword;
-
-	// UI references.
-	private EditText mEmailView;
-	private EditText mPasswordView;
-	private View mLoginFormView;
-	private View mLoginStatusView;
-	private TextView mLoginStatusMessageView;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_login);
-
-		// Set up the login form.
-		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
-		mEmailView = (EditText) findViewById(R.id.email);
-		mEmailView.setText(mEmail);
-
-		mPasswordView = (EditText) findViewById(R.id.password);
-		mPasswordView
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView textView, int id,
-							KeyEvent keyEvent) {
-						if (id == R.id.login || id == EditorInfo.IME_NULL) {
-							attemptLogin();
-							return true;
-						}
-						return false;
-					}
-				});
-
-		mLoginFormView = findViewById(R.id.login_form);
-		mLoginStatusView = findViewById(R.id.login_status);
-		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
-
-		findViewById(R.id.sign_in_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						attemptLogin();
-					}
-				});
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
-	}
-
-	/**
-	 * Attempts to sign in or register the account specified by the login form.
-	 * If there are form errors (invalid email, missing fields, etc.), the
-	 * errors are presented and no actual login attempt is made.
-	 */
-	public void attemptLogin() {
-		if (mAuthTask != null) {
-			return;
-		}
-
-		// Reset errors.
-		mEmailView.setError(null);
-		mPasswordView.setError(null);
-
-		// Store values at the time of the login attempt.
-		mEmail = mEmailView.getText().toString();
-		mPassword = mPasswordView.getText().toString();
-
-		boolean cancel = false;
-		View focusView = null;
-
-		// Check for a valid password.
-		if (TextUtils.isEmpty(mPassword)) {
-			mPasswordView.setError(getString(R.string.error_field_required));
-			focusView = mPasswordView;
-			cancel = true;
-		} else if (mPassword.length() < 4) {
-			mPasswordView.setError(getString(R.string.error_invalid_password));
-			focusView = mPasswordView;
-			cancel = true;
-		}
-
-		// Check for a valid email address.
-		if (TextUtils.isEmpty(mEmail)) {
-			mEmailView.setError(getString(R.string.error_field_required));
-			focusView = mEmailView;
-			cancel = true;
-		} else if (!mEmail.contains("@")) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
-			focusView = mEmailView;
-			cancel = true;
-		}
-
-		if (cancel) {
-			// There was an error; don't attempt login and focus the first
-			// form field with an error.
-			focusView.requestFocus();
-		} else {
-			// Show a progress spinner, and kick off a background task to
-			// perform the user login attempt.
-			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-			showProgress(true);
-			mAuthTask = new UserLoginTask();
-			mAuthTask.execute((Void) null);
+    // products JSONArray
+    JSONArray user = null;
+	
+	//url to get login autorization.
+	private static String url_login = "http://thecity.sfsu.edu/login.php";
+	
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        
+        //Setting Variables for input texts and buttons
+        inputName = (EditText) findViewById(R.id.email);
+        inputPassword = (EditText) findViewById(R.id.password);
+        logButton = (Button) findViewById(R.id.sign_in_button);
+        //tv = (TextView) findViewById(R.id.showresult);
+        
+        logButton.setOnClickListener(new View.OnClickListener() {
 			
-	        Intent intent = new Intent("android.intent.action.MAPACTION");
-	        startActivity(intent);
-	        //startActivityForResult(intent, 0);
+			@Override
+			public void onClick(View v) {
+				
+				new loginProcess().execute();
+			}
+			
+		});
+        
+     }
+    
+    /**
+     * Background Async Task
+     * */
+    class loginProcess extends AsyncTask<String, String, String> {
+    	
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(LoginActivity.this);
+			pDialog.setMessage("Login.... Please wait...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+		}
+    	
+        /**
+         * getting result from url
+         * */
+        protected String doInBackground(String... postParameters) {
+        	
+				String name = inputName.getText().toString();
+				String password = inputPassword.getText().toString();
+		        
+				// call executeHttpPost method passing necessary parameters 
+		        try {
+				// declare parameters that are passed to PHP script
+				List<NameValuePair> postParam = new ArrayList<NameValuePair>();
+				
+				postParam.add(new BasicNameValuePair("tag", KEY_TAG));
+				postParam.add(new BasicNameValuePair("user_name",name));
+				postParam.add(new BasicNameValuePair("password",password));
+				//String response = null;
+				
+		        	JSONObject response = jParser.makeHttpRequest(
+		    		 "http://thecity.sfsu.edu/~m2phyo/login.php", //remote server
+		    		 //"http://thecity.sfsu.edu/~m2phyo/index.php", //remote server
+		    		 "POST", postParam);
+		     
+		        	// store the result returned by PHP script that runs MySQL query
+		        	String result = response.toString();  
+		            Log.d("User :", result);
+		            
+			        try {
+		                // Checking for SUCCESS TAG
+		                int success = response.getInt(KEY_SUCCESS);
+		 
+		                if (success == 1) {
+		                    // products found
+		                    // Getting Array of Products
+		                    user = response.getJSONArray(KEY_USER);
+		 
+		                    // looping through All users
+		                    //for (int i = 0; i < user.length(); i++) {
+		                        JSONObject c = user.getJSONObject(0);
+		 
+		                        // Storing each json user item in variable
+		                        String id = c.getString(KEY_ID);
+		                        String user_name = c.getString(KEY_NAME);
+		 
+		                        returnString += "\n" + id + "->" + user_name;		                        
+		                        
+		                        // creating new HashMap
+		                        HashMap<String, String> map = new HashMap<String, String>();
+		 
+		                        // adding each child node to HashMap key => value
+		                        map.put(KEY_ID, id);
+		                        map.put(KEY_NAME, user_name);
+		 
+		                        // adding HashList to ArrayList
+		                        //user.add(map);
+		                    }
+		                //}
+
+		                else {
+//		                    // no products found
+		                	returnString += "\n" + response.getString("message");
+//		                    // Launch Add New product Activity
+//		                    Intent i = new Intent(getApplicationContext(),
+//		                            NewProductActivity.class);
+//		                    // Closing all previous activities
+//		                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//		                    startActivity(i);
+		                }
+		            } catch (JSONException e) {
+		                e.printStackTrace();
+		            }
+		        
+		        	        
+		        }catch (Exception e) {
+		        	Log.e("log_tag","Error in http connection!!" + e.toString());     
+		        	}
+		       
+		        
+		     return null;
+		}
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog after getting all products
+			pDialog.dismiss();
+	        try{
+	            tv.setText(returnString);
+	           }
+	           catch(Exception e){
+	            Log.e("log_tag","Error in Display!" + e.toString());;          
+	           } 
 		}
 	}
-
-	/**
-	 * Shows the progress UI and hides the login form.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(
-					android.R.integer.config_shortAnimTime);
-
-			mLoginStatusView.setVisibility(View.VISIBLE);
-			mLoginStatusView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginStatusView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
-						}
-					});
-
-			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
-
-	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
-	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
-
-			try {
-				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return false;
-			}
-
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
-			}
-
-			// TODO: register the new account here.
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(final Boolean success) {
-			mAuthTask = null;
-			showProgress(false);
-
-			if (success) {
-				finish();
-			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
-			}
-		}
-
-		@Override
-		protected void onCancelled() {
-			mAuthTask = null;
-			showProgress(false);
-		}
-	}
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.login, menu);
+//        return true;
+//    }
+    
 }
