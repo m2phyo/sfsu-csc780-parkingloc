@@ -14,19 +14,19 @@ public class DashboardActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
- 
+         
         /**
          * Dashboard Screen for the application
-         * */
+         * */       
         // Check login status in database
         userFunctions = new UserFunctions();
         if(userFunctions.isUserLoggedIn(getApplicationContext())){
        // user already logged in show databoard
             setContentView(R.layout.dashboard);
             btnLogout = (Button) findViewById(R.id.btnLogout);
- 
+             
             btnLogout.setOnClickListener(new View.OnClickListener() {
- 
+                 
                 public void onClick(View arg0) {
                     // TODO Auto-generated method stub
                     userFunctions.logoutUser(getApplicationContext());
@@ -37,7 +37,7 @@ public class DashboardActivity extends Activity {
                     finish();
                 }
             });
- 
+             
         }else{
             // user is not logged in show login screen
             Intent login = new Intent(getApplicationContext(), LoginActivity.class);
@@ -45,6 +45,6 @@ public class DashboardActivity extends Activity {
             startActivity(login);
             // Closing dashboard screen
             finish();
-        }
+        }        
     }
 }
