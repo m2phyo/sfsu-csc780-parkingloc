@@ -14,12 +14,15 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -30,10 +33,16 @@ import org.json.JSONObject;
 
 
 public class LoginActivity extends Activity {
-	
 	Button logButton;
-	EditText inputName;
+	EditText inputEmail;
 	EditText inputPassword;
+	
+	// Keep track of the login task to ensure we can cancel it if requested.
+	private loginProcess mAuthTask = null;
+	
+	// Values for email and password at the time of the login attempt.
+	private String mEmail;
+	private String mPassword;
 	
 	// Progress Dialog
 	private ProgressDialog pDialog;
@@ -54,146 +63,176 @@ public class LoginActivity extends Activity {
 
     // products JSONArray
     JSONArray user = null;
-	
-	//url to get login autorization.
-	private static String url_login = "http://thecity.sfsu.edu/login.php";
-	
-	
+        
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.login);
         
         //Setting Variables for input texts and buttons
-        inputName = (EditText) findViewById(R.id.email);
-        inputPassword = (EditText) findViewById(R.id.password);
-        logButton = (Button) findViewById(R.id.sign_in_button);
-        //tv = (TextView) findViewById(R.id.showresult);
+        inputEmail = (EditText) findViewById(R.id.loginEmail);
+        inputPassword = (EditText) findViewById(R.id.loginPassword);
+        logButton = (Button) findViewById(R.id.btnLogin);
+        tv = (TextView) findViewById(R.id.login_error);
         
         logButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				new loginProcess().execute();
-			}
-			
-		});
-        
-     }
+            @Override
+            public void onClick(View v) {
+            	attemptLogin();
+            }
+        });
+
+        // Link to Register Screen
+        findViewById(R.id.btnLinkToRegisterScreen).setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+	}
+    
+    /**
+	 * Attempts to sign in or register the account specified by the login form.
+	 * If there are form errors (invalid email, missing fields, etc.), the
+	 * errors are presented and no actual login attempt is made.
+	 */
+    public void attemptLogin() {
+
+		// Reset errors.
+		inputEmail.setError(null);
+		inputPassword.setError(null);
+
+		// Store values at the time of the login attempt.
+		mEmail = inputEmail.getText().toString();
+		mPassword = inputPassword.getText().toString();
+
+		boolean cancel = false;
+		View focusView = null;
+
+		// Check for a valid password.
+		if (TextUtils.isEmpty(mPassword)) {
+			inputPassword.setError(getString(R.string.error_field_required));
+			focusView = inputPassword;
+			cancel = true;
+		} else if (mPassword.length() < 4) {
+			inputPassword.setError(getString(R.string.error_invalid_password));
+			focusView = inputPassword;
+			cancel = true;
+		}
+
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mEmail)) {
+			inputEmail.setError(getString(R.string.error_field_required));
+			focusView = inputEmail;
+			cancel = true;
+		} else if (!mEmail.contains("@")) {
+			inputEmail.setError(getString(R.string.error_invalid_email));
+			focusView = inputEmail;
+			cancel = true;
+		} else if (!mEmail.contains(".")) {
+			inputEmail.setError(getString(R.string.error_invalid_email));
+			focusView = inputEmail;
+			cancel = true;
+		}
+
+		if (cancel) {
+			// There was an error; don't attempt login and focus the first
+			// form field with an error.
+			focusView.requestFocus();
+		} else {
+			// Show a progress spinner, and kick off a background task to
+			// perform the user login attempt.
+//			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+//			showProgress(true);
+//			mAuthTask = new UserLoginTask();
+//			mAuthTask.execute((Void) null);
+			new loginProcess().execute();
+		}
+	}
     
     /**
      * Background Async Task
      * */
     class loginProcess extends AsyncTask<String, String, String> {
     	
-		/**
-		 * Before starting background thread Show Progress Dialog
-		 * */
-		@Override
-		protected void onPreExecute() {
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
 			super.onPreExecute();
 			pDialog = new ProgressDialog(LoginActivity.this);
 			pDialog.setMessage("Login.... Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
-		}
-    	
+        }
+        
         /**
          * getting result from url
          * */
+        @Override
         protected String doInBackground(String... postParameters) {
-        	
-				String name = inputName.getText().toString();
-				String password = inputPassword.getText().toString();
-		        
-				// call executeHttpPost method passing necessary parameters 
-		        try {
-				// declare parameters that are passed to PHP script
-				List<NameValuePair> postParam = new ArrayList<NameValuePair>();
-				
-				postParam.add(new BasicNameValuePair("tag", KEY_TAG));
-				postParam.add(new BasicNameValuePair("user_name",name));
-				postParam.add(new BasicNameValuePair("password",password));
-				//String response = null;
-				
-		        	JSONObject response = jParser.makeHttpRequest(
-		    		 "http://thecity.sfsu.edu/~m2phyo/login.php", //remote server
-		    		 //"http://thecity.sfsu.edu/~m2phyo/index.php", //remote server
-		    		 "POST", postParam);
-		     
-		        	// store the result returned by PHP script that runs MySQL query
-		        	String result = response.toString();  
-		            Log.d("User :", result);
-		            
-			        try {
-		                // Checking for SUCCESS TAG
-		                int success = response.getInt(KEY_SUCCESS);
-		 
-		                if (success == 1) {
-		                    // products found
-		                    // Getting Array of Products
-		                    user = response.getJSONArray(KEY_USER);
-		 
-		                    // looping through All users
-		                    //for (int i = 0; i < user.length(); i++) {
-		                        JSONObject c = user.getJSONObject(0);
-		 
-		                        // Storing each json user item in variable
-		                        String id = c.getString(KEY_ID);
-		                        String user_name = c.getString(KEY_NAME);
-		 
-		                        returnString += "\n" + id + "->" + user_name;		                        
-		                        
-		                        // creating new HashMap
-		                        HashMap<String, String> map = new HashMap<String, String>();
-		 
-		                        // adding each child node to HashMap key => value
-		                        map.put(KEY_ID, id);
-		                        map.put(KEY_NAME, user_name);
-		 
-		                        // adding HashList to ArrayList
-		                        //user.add(map);
-		                    }
-		                //}
-
-		                else {
-//		                    // no products found
-		                	returnString += "\n" + response.getString("message");
-//		                    // Launch Add New product Activity
-//		                    Intent i = new Intent(getApplicationContext(),
-//		                            NewProductActivity.class);
-//		                    // Closing all previous activities
-//		                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//		                    startActivity(i);
-		                }
-		            } catch (JSONException e) {
-		                e.printStackTrace();
-		            }
-		        
-		        	        
-		        }catch (Exception e) {
-		        	Log.e("log_tag","Error in http connection!!" + e.toString());     
-		        	}
-		       
-		        
-		     return null;
-		}
+            String name = inputEmail.getText().toString();
+            String password = inputPassword.getText().toString();
+    
+            // call executeHttpPost method passing necessary parameters 
+            try {
+	            // declare parameters that are passed to PHP script
+	            List<NameValuePair> postParam = new ArrayList<NameValuePair>();
+	            
+	            postParam.add(new BasicNameValuePair("tag", KEY_TAG));
+	            postParam.add(new BasicNameValuePair("user_name",name));
+	            postParam.add(new BasicNameValuePair("password",password));
+	            Log.d("password: ",password);
+	            //String response = null;
+	            
+	            JSONObject response = jParser.makeHttpRequest(
+	            		"http://thecity.sfsu.edu/~m2phyo/login.php",	//remote server
+	            		"POST", postParam);								// POST method
+	 
+	            // store the result returned by PHP script that runs MySQL query
+	            String result = response.toString();  
+	            Log.d("User :", result);
+	        
+	            try {
+	            	// Checking for SUCCESS TAG
+	                int success = response.getInt(KEY_SUCCESS);
+	 
+	                if (success == 1) {
+	    				Intent home = new Intent(getApplicationContext(), HomeActivity.class);
+	                    // Close all views before launching Home
+	                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	                startActivity(home);
+	                } else {
+	        		// no products found
+	                returnString += "\n" + response.getString("message");
+	                }
+	            } catch (JSONException e) {
+	            	e.printStackTrace();
+	            }          
+        	} catch (Exception e) {
+                Log.e("log_tag","Error in http connection!!" + e.toString());     
+        	}
+            return returnString;
+        }
+        
 		/**
 		 * After completing background task Dismiss the progress dialog
 		 * **/
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(String resultText) {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
-	        try{
-	            tv.setText(returnString);
-	           }
-	           catch(Exception e){
-	            Log.e("log_tag","Error in Display!" + e.toString());;          
-	           } 
+			try {
+				tv.setText(resultText);
+			} catch(Exception e){
+				Log.e("log_tag","Error in Display!" + e.toString());;          
+			}
 		}
 	}
+    
+    
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
