@@ -14,6 +14,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -33,8 +34,15 @@ import org.json.JSONObject;
 
 public class LoginActivity extends Activity {
 	Button logButton;
-	EditText inputName;
+	EditText inputEmail;
 	EditText inputPassword;
+	
+	// Keep track of the login task to ensure we can cancel it if requested.
+	private loginProcess mAuthTask = null;
+	
+	// Values for email and password at the time of the login attempt.
+	private String mEmail;
+	private String mPassword;
 	
 	// Progress Dialog
 	private ProgressDialog pDialog;
@@ -62,7 +70,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login);
         
         //Setting Variables for input texts and buttons
-        inputName = (EditText) findViewById(R.id.loginEmail);
+        inputEmail = (EditText) findViewById(R.id.loginEmail);
         inputPassword = (EditText) findViewById(R.id.loginPassword);
         logButton = (Button) findViewById(R.id.btnLogin);
         tv = (TextView) findViewById(R.id.login_error);
@@ -70,8 +78,7 @@ public class LoginActivity extends Activity {
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    
-                    new loginProcess().execute();
+            	attemptLogin();
             }
         });
 
@@ -83,7 +90,66 @@ public class LoginActivity extends Activity {
                 finish();
             }
         });
-     }
+	}
+    
+    /**
+	 * Attempts to sign in or register the account specified by the login form.
+	 * If there are form errors (invalid email, missing fields, etc.), the
+	 * errors are presented and no actual login attempt is made.
+	 */
+    public void attemptLogin() {
+
+		// Reset errors.
+		inputEmail.setError(null);
+		inputPassword.setError(null);
+
+		// Store values at the time of the login attempt.
+		mEmail = inputEmail.getText().toString();
+		mPassword = inputPassword.getText().toString();
+
+		boolean cancel = false;
+		View focusView = null;
+
+		// Check for a valid password.
+		if (TextUtils.isEmpty(mPassword)) {
+			inputPassword.setError(getString(R.string.error_field_required));
+			focusView = inputPassword;
+			cancel = true;
+		} else if (mPassword.length() < 4) {
+			inputPassword.setError(getString(R.string.error_invalid_password));
+			focusView = inputPassword;
+			cancel = true;
+		}
+
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mEmail)) {
+			inputEmail.setError(getString(R.string.error_field_required));
+			focusView = inputEmail;
+			cancel = true;
+		} else if (!mEmail.contains("@")) {
+			inputEmail.setError(getString(R.string.error_invalid_email));
+			focusView = inputEmail;
+			cancel = true;
+		} else if (!mEmail.contains(".")) {
+			inputEmail.setError(getString(R.string.error_invalid_email));
+			focusView = inputEmail;
+			cancel = true;
+		}
+
+		if (cancel) {
+			// There was an error; don't attempt login and focus the first
+			// form field with an error.
+			focusView.requestFocus();
+		} else {
+			// Show a progress spinner, and kick off a background task to
+			// perform the user login attempt.
+//			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+//			showProgress(true);
+//			mAuthTask = new UserLoginTask();
+//			mAuthTask.execute((Void) null);
+			new loginProcess().execute();
+		}
+	}
     
     /**
      * Background Async Task
@@ -107,7 +173,7 @@ public class LoginActivity extends Activity {
          * getting result from url
          * */
         protected String doInBackground(String... postParameters) {
-            String name = inputName.getText().toString();
+            String name = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
     
             // call executeHttpPost method passing necessary parameters 

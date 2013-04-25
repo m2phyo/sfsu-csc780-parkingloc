@@ -37,7 +37,6 @@ public class RegisterActivity extends Activity {
         setContentView(R.layout.register);
         
      // Importing all assets like buttons, text fields
-        inputFullName = (EditText) findViewById(R.id.registerName);
         inputEmail = (EditText) findViewById(R.id.registerEmail);
         inputPassword = (EditText) findViewById(R.id.registerPassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
