@@ -201,8 +201,8 @@ public class LoginActivity extends Activity {
 	                if (success == 1) {
 	    				Intent home = new Intent(getApplicationContext(), HomeActivity.class);
 	                    // Close all views before launching Home
-	                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	                startActivity(home);
+		                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		                startActivity(home);
 	                } else {
 	        		// no products found
 	                returnString += "\n" + response.getString("message");

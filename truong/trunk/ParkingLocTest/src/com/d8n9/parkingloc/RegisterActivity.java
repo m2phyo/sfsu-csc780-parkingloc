@@ -1,12 +1,20 @@
 package com.d8n9.parkingloc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.d8n9.parkingloc.library.*;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.util.Log;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +37,13 @@ public class RegisterActivity extends Activity {
     private static String KEY_NAME = "name";
     private static String KEY_EMAIL = "email";
     private static String KEY_CREATED_AT = "created_at";
+    private static String KEY_TAG = "register";
+        
+	// Progress Dialog
+	private ProgressDialog pDialog;
+	
+	// Creating JSON Parser object
+	JSONParser jParser = new JSONParser();
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +61,7 @@ public class RegisterActivity extends Activity {
         // Register Button Click event
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+            	new registerProcess().execute();
 //                String name = inputFullName.getText().toString();
 //                String email = inputEmail.getText().toString();
 //                String password = inputPassword.getText().toString();
@@ -95,5 +111,87 @@ public class RegisterActivity extends Activity {
                 finish();
             }
         });
+    }
+    
+    /**
+     * Background Async Task
+     * */
+    class registerProcess extends AsyncTask<String, String, String> {
+        
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+                        super.onPreExecute();
+                        pDialog = new ProgressDialog(RegisterActivity.this);
+                        pDialog.setMessage("Register.... Please wait...");
+                        pDialog.setIndeterminate(false);
+                        pDialog.setCancelable(true);
+                        pDialog.show();
+        }
+        
+        /**
+         * getting result from url
+         * */
+        @Override
+        protected String doInBackground(String... postParameters) {
+            String name = inputEmail.getText().toString();
+            String password = inputPassword.getText().toString();
+    
+            String returnString = "";
+            // call executeHttpPost method passing necessary parameters 
+            try {
+                    // declare parameters that are passed to PHP script
+                    List<NameValuePair> postParam = new ArrayList<NameValuePair>();
+                    
+                    postParam.add(new BasicNameValuePair("tag", KEY_TAG));
+                    postParam.add(new BasicNameValuePair("user_name",name));
+                    postParam.add(new BasicNameValuePair("password",password));
+                    Log.d("password: ",password);
+                    //String response = null;
+                    
+                    JSONObject response = jParser.makeHttpRequest(
+                                "http://thecity.sfsu.edu/~m2phyo/register.php", //remote server
+                                "POST", postParam);                                                             // POST method
+         
+                    // store the result returned by PHP script that runs MySQL query
+                    String result = response.toString();  
+                    Log.d("Register User :", result);
+                
+                    try {
+                        // Checking for SUCCESS TAG
+                        int success = response.getInt(KEY_SUCCESS);
+         
+                        if (success == 1) {
+                            Intent home = new Intent(getApplicationContext(), HomeActivity.class);
+                            // Close all views before launching Home
+                        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(home);
+                        } else {
+                                // no products found
+                        returnString += "\n" + response.getString("message");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }          
+                } catch (Exception e) {
+                Log.e("log_tag","Error in http connection!!" + e.toString());     
+                }
+            return returnString;
+        }
+        
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String resultText) {
+            // dismiss the dialog after getting all products
+            pDialog.dismiss();
+            try {
+                    registerErrorMsg.setText(resultText);
+            } catch(Exception e){
+                    Log.e("log_tag","Error in Display!" + e.toString());;          
+            }
+        }
     }
 }

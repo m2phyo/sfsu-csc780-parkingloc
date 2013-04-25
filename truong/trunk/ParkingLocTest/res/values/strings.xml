@@ -14,5 +14,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_invalid_email_or_password">Invalid email or password</string>
     <string name="error_field_required">This field is required</string>
+    <string name="title_activity_change_pass">Change Password</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

@@ -150,42 +150,54 @@ containing a value of this type.
         public static final int repeat_bg=0x7f020008;
     }
     public static final class id {
-        public static final int action_settings=0x7f040013;
-        public static final int btnLinkToLoginScreen=0x7f040012;
-        public static final int btnLinkToRegisterScreen=0x7f04000c;
-        public static final int btnLogin=0x7f04000b;
-        public static final int btnLogout=0x7f040005;
-        public static final int btnRegister=0x7f040011;
-        public static final int footer=0x7f040007;
-        public static final int header=0x7f040006;
+        public static final int action_settings=0x7f04001d;
+        public static final int btnLinkToLoginScreen=0x7f04001c;
+        public static final int btnLinkToRegisterScreen=0x7f040016;
+        public static final int btnLogin=0x7f040015;
+        public static final int btnLogout=0x7f04000f;
+        public static final int btnRegister=0x7f04001b;
+        public static final int change_pass=0x7f04000d;
+        public static final int change_pass_back=0x7f04000e;
+        public static final int change_password=0x7f040007;
+        public static final int footer=0x7f040011;
+        public static final int header=0x7f040010;
         public static final int hybrid=0x7f040004;
-        public static final int loginEmail=0x7f040008;
-        public static final int loginPassword=0x7f040009;
-        public static final int login_error=0x7f04000a;
+        public static final int loginEmail=0x7f040012;
+        public static final int loginPassword=0x7f040013;
+        public static final int login_error=0x7f040014;
+        public static final int logout=0x7f040008;
+        public static final int map=0x7f040017;
+        public static final int newPassword=0x7f04000a;
         public static final int none=0x7f040000;
         public static final int normal=0x7f040001;
-        public static final int registerEmail=0x7f04000d;
-        public static final int registerPassword=0x7f04000e;
-        public static final int register_error=0x7f040010;
-        public static final int repeat_password=0x7f04000f;
+        public static final int oldPassword=0x7f040009;
+        public static final int registerEmail=0x7f040018;
+        public static final int registerPassword=0x7f040019;
+        public static final int register_error=0x7f04000c;
+        public static final int repeat_newPassword=0x7f04000b;
+        public static final int repeat_password=0x7f04001a;
         public static final int satellite=0x7f040002;
+        public static final int scrollView1=0x7f040005;
         public static final int terrain=0x7f040003;
+        public static final int textView1=0x7f040006;
     }
     public static final class layout {
         public static final int account=0x7f030000;
-        public static final int dashboard=0x7f030001;
-        public static final int footer_repeat=0x7f030002;
-        public static final int header_gradient=0x7f030003;
-        public static final int home=0x7f030004;
-        public static final int list=0x7f030005;
-        public static final int login=0x7f030006;
-        public static final int map=0x7f030007;
-        public static final int register=0x7f030008;
+        public static final int change_pass=0x7f030001;
+        public static final int dashboard=0x7f030002;
+        public static final int footer_repeat=0x7f030003;
+        public static final int header_gradient=0x7f030004;
+        public static final int home=0x7f030005;
+        public static final int list=0x7f030006;
+        public static final int login=0x7f030007;
+        public static final int map=0x7f030008;
+        public static final int register=0x7f030009;
     }
     public static final class menu {
-        public static final int dashboard=0x7f080000;
-        public static final int home=0x7f080001;
-        public static final int login=0x7f080002;
+        public static final int change_pass=0x7f080000;
+        public static final int dashboard=0x7f080001;
+        public static final int home=0x7f080002;
+        public static final int login=0x7f080003;
     }
     public static final class string {
         public static final int action_forgot_password=0x7f050018;
@@ -259,9 +271,11 @@ containing a value of this type.
         public static final int error_invalid_email=0x7f05001a;
         public static final int error_invalid_email_or_password=0x7f05001c;
         public static final int error_invalid_password=0x7f05001b;
+        public static final int hello_world=0x7f05001f;
         public static final int login_progress_signing_in=0x7f050019;
         public static final int prompt_email=0x7f050014;
         public static final int prompt_password=0x7f050015;
+        public static final int title_activity_change_pass=0x7f05001e;
         public static final int title_activity_home=0x7f050013;
     }
     public static final class style {

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:padding="8dp" >
+
+        <!-- Old Password Label -->
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Old Password"/>
+		<EditText android:id="@+id/oldPassword"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:password="true"
+			android:singleLine="true"/>
+        
+        <!-- Password Label -->
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="New Password"/>
+		<EditText android:id="@+id/newPassword"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:password="true"
+			android:singleLine="true"/>
+		
+		<!-- Password Repeat -->
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Repeat your password"/>
+		<EditText android:id="@+id/repeat_newPassword"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:password="true"
+			android:singleLine="true"/>
+		<!--  Error message -->
+       	<TextView android:id="@+id/register_error"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="#e30000"
+	        android:padding="5dip"
+	        android:textStyle="bold"/>
+		
+		<Button
+            android:id="@+id/change_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit" />
+		
+        <Button
+            android:id="@+id/change_pass_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Go back" />
+
+    </LinearLayout>
+
+</ScrollView>
