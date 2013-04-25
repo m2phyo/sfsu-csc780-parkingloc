@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <activity
-            android:name="com.d8n9.parkingloc.DashboardActivity"
+            android:name="com.d8n9.parkingloc.LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,14 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Login Activity -->
-        <activity
-            android:name="com.d8n9.parkingloc.LoginActivity"
-            android:label="Login Account" >
-        </activity>
-
-        <!-- Register Activity -->
         <activity
             android:name="com.d8n9.parkingloc.RegisterActivity"
             android:label="Register New Account" >
@@ -38,6 +30,9 @@
             android:name="com.d8n9.parkingloc.HomeActivity"
             android:label="@string/title_activity_home" >
         </activity>
+        <activity android:name=".MapActivity" />
+        <activity android:name=".ListActivity" />
+        <activity android:name=".AccountActivity" />
     </application>
 
     <!-- Allow to connect with internet -->
