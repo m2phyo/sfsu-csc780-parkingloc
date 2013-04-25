@@ -50,6 +50,7 @@ public final class R {
         public static final int home=0x7f030003;
         public static final int login=0x7f030004;
         public static final int register=0x7f030005;
+        public static final int showresult=0x7f030006;
     }
     public static final class menu {
         public static final int dashboard=0x7f070000;
