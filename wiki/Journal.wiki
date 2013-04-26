@@ -81,3 +81,9 @@ intent to navigate, drive to the spot
    # Set up tabs for Map Layout.
    # Get current location working.
    # Able to add markers on the map.
+
+To do next week:
+  #UI - development registering parking spot with current location.
+      - reserve parking spot with user type in address.
+  #UI - user mode search available parking spot.
+  #Tap somewhere and find available parking spot around there. 
