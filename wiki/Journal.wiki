@@ -62,11 +62,17 @@ intent to navigate, drive to the spot
 
  * *Min Min*
    # Designed and Created Database Tables.
+    * User table with user ID, user_name, password and home location.
+    * Location Information table to store Location Address and Description.
    # Deployed PHP Web Server for MySQL Database Access.
+    * login.php - check and get PHP _POST user information tags and query from the MySQL database. Then reply success key and message in JSON format.
+    * register.php - check and get PHP _POST user information tags and Insert into Database table. Reply success key and message in JSON format.
    # Implemented the JSONParser Class to communicate and get data from Server.
-   # Implemented DatabaseHandler Class to handle data from Database.
+    * This class connect with PHP web server using HTTP Request.
+    * Using POST method to send information to web.
+    * Getting HTTP response entity back and parse the data into JSON Object.
    # Implemented UserFunctions Class to access data.
-    
+    * Initial implementation of some User Functions for getting location information and updating etc.
 
  * *Truong*
    # Login Activity.
