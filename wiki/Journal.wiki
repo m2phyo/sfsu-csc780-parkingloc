@@ -64,7 +64,7 @@ intent to navigate, drive to the spot
    # Designed and Created Database Tables.
    # Deployed PHP Web Server for MySQL Database Access.
    # Implemented the JSONParser Class to communicate and get data from Server.
-   # Implemented DatabaseHandler Classe to handle data from Database.
+   # Implemented DatabaseHandler Class to handle data from Database.
    # Implemented UserFunctions Class to access data.
     
 
