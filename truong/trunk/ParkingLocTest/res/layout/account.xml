@@ -9,23 +9,27 @@
         android:layout_height="fill_parent"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:padding="8dp" >
+        android:padding="15dip"
+        android:paddingTop="15dip" >
 
         <TextView
             android:id="@+id/textView1"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textSize="18dip"
+            android:paddingTop="15dip"
+            android:paddingBottom="15dip"
             android:text="Hello, you are logged in" />
 
         <Button
             android:id="@+id/change_password"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Change Password" />
 
         <Button
             android:id="@+id/logout"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Logout" />
 

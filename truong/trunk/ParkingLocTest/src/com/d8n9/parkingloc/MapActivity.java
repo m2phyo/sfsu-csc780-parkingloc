@@ -1,206 +1,229 @@
 package com.d8n9.parkingloc;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
+//import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+//import android.support.v4.app.FragmentActivity;
+//import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
-
-public class MapActivity extends FragmentActivity implements LocationListener, LocationSource {
+ 
+public class MapActivity extends Activity implements OnMapClickListener, OnMapLongClickListener, LocationSource, LocationListener{
 	
 	final int RQS_GooglePlayServices = 1;
-	private GoogleMap mMap;
-
-	private OnLocationChangedListener mListener;
-	private LocationManager locationManager;
+	private GoogleMap myMap;
 	
-	private String homeAddress = "421 Turk St, San Francisco, CA 94102";
+	Location myLocation;
+	TextView tvLocInfo;
+	
+	LocationManager myLocationManager = null;
+	OnLocationChangedListener myLocationListener = null;
+	Criteria myCriteria;
+	
+	static final LatLng USA = new LatLng(37.090240, -95.712891);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
 		
-		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		tvLocInfo = (TextView)findViewById(R.id.tv_location);
+		
+		FragmentManager myFragmentManager = getFragmentManager();
+		MapFragment myMapFragment 
+			= (MapFragment)myFragmentManager.findFragmentById(R.id.map);
+		myMap = myMapFragment.getMap();
+		
+		myMap.setMyLocationEnabled(true);
+		myMap.getUiSettings().setZoomControlsEnabled(false);
+		
+		myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		//myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		//myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+		//myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+		
+		myCriteria = new Criteria();
+		myCriteria.setAccuracy(Criteria.ACCURACY_FINE);
+		myLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		
+		// Move the camera to USA
+		myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(USA, 3));	
+		// Zoom in, animating the camera.
+	    // myMap.animateCamera(CameraUpdateFactory.zoomTo(3), 2000, null);
+		
+		// Detect single tap on the map
+		myMap.setOnMapClickListener(this);
+		
+		// Detect long tap on the map
+		myMap.setOnMapLongClickListener(this);
+		
+//		
+//		Geocoder g = new Geocoder(this, Locale.getDefault());
+//		try {
+//			List<Address> addresses = g.getFromLocationName("empire state building", 1);
+//			if (addresses.size() > 0) {
+//				Address singleAdd = addresses.get(0);
+//				if (singleAdd.hasLatitude() && singleAdd.hasLongitude()) {
+//					double selectedLat = singleAdd.getLatitude();
+//		            double selectedLng = singleAdd.getLongitude();
+//		            LatLng place = new LatLng(selectedLat, selectedLng);
+//		            myMap.addMarker(new MarkerOptions().position(place).title("Here is the road location")
+//		            			.snippet("Hon the lads"));
+//				}
+//			}
+//		} catch (IOException e) {
+//            e.printStackTrace();
+//        }
+		
+		
+		// Geocoder: translate an address to longitude and latitude
+		Geocoder g = new Geocoder(this);
+	    List<Address> addressList = null;
+	    String streetName = "San Francisco State University";
+	    try {
+	        addressList = g.getFromLocationName(streetName, 1);
 
-	    if(locationManager != null)
-	    {
-	        boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-	        boolean networkIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+	    } catch (IOException e) {
+	        Toast.makeText(this, "Location not found",     Toast.LENGTH_SHORT)
+	                    .show();
+	            e.printStackTrace();
 
-	        if(gpsIsEnabled)
-	        {
-	            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 10F, this);
-	        }
-	        else if(networkIsEnabled)
-	        {
-	            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000L, 10F, this);
-	        }
-	        else
-	        {
-	            //Show an error dialog that GPS is disabled.
-	        }
-	    }
-	    else
-	    {
-	        //Show a generic error dialog since LocationManager is null for some reason
-	    }
-
-	    setUpMapIfNeeded();
-	}
+	    } finally {
+	    	if (addressList.get(0) != null) {
+		        Address address = addressList.get(0);
 	
-	@Override
-	public void onPause()
-	{
-	    if(locationManager != null)
-	    {
-	        locationManager.removeUpdates(this);
+		        if (address.hasLatitude() && address.hasLongitude()) {
+		            double selectedLat = address.getLatitude();
+		            double selectedLng = address.getLongitude();
+		            LatLng place = new LatLng(selectedLat, selectedLng);
+		            myMap.addMarker(new MarkerOptions().position(place).title("Here is the road location")
+		            			.snippet("Hon the lads"));
+		        }
+	    	}
 	    }
-
-	    super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
-		setUpMapIfNeeded();
-		
-		if(locationManager != null)
-	    {
-	        mMap.setMyLocationEnabled(true);
-	    }
 
-//		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-//		
-//		if (resultCode == ConnectionResult.SUCCESS){
+		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+		
+		if (resultCode == ConnectionResult.SUCCESS){
 //			Toast.makeText(getApplicationContext(), 
 //					"isGooglePlayServicesAvailable SUCCESS", 
 //					Toast.LENGTH_SHORT).show();
-//		}else{
-//			GooglePlayServicesUtil.getErrorDialog(resultCode, this, RQS_GooglePlayServices);
-//		}
+			
+			// Register for location updates using a Criteria, and a callback on the specified looper thread.
+			myLocationManager.requestLocationUpdates(
+				0L,    //minTime
+				0.0f,    //minDistance
+				myCriteria,  //criteria
+				this,    //listener
+				null);   //looper
+			
+			// Replaces the location source of the my-location layer.
+			myMap.setLocationSource(this);
+			
+		}else{
+			GooglePlayServicesUtil.getErrorDialog(resultCode, this, RQS_GooglePlayServices);
+		}
 		
 	}
 
-	/**
-	 * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-	 * installed) and the map has not already been instantiated.. This will ensure that we only ever
-	 * call {@link #setUpMap()} once when {@link #mMap} is not null.
-	 * <p>
-	 * If it isn't installed {@link SupportMapFragment} (and
-	 * {@link com.google.android.gms.maps.MapView
-	 * MapView}) will show a prompt for the user to install/update the Google Play services APK on
-	 * their device.
-	 * <p>
-	 * A user can return to this Activity after following the prompt and correctly
-	 * installing/updating/enabling the Google Play services. Since the Activity may not have been
-	 * completely destroyed during this process (it is likely that it would only be stopped or
-	 * paused), {@link #onCreate(Bundle)} may not be called again so we should call this method in
-	 * {@link #onResume()} to guarantee that it will be called.
-	 */
-	private void setUpMapIfNeeded() {
-	    // Do a null check to confirm that we have not already instantiated the map.
-	    if (mMap == null) 
-	    {
-	        // Try to obtain the map from the SupportMapFragment.
-	        mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-	        // Check if we were successful in obtaining the map.
-
-	        if (mMap != null) 
-	        {
-	            setUpMap();
-	        }
-
-	        // This is how you register the LocationSource
-	        mMap.setLocationSource(this);
-	    }
+	@Override
+	public void onMapClick(LatLng point) {
+		tvLocInfo.setText(point.toString());
+		myMap.animateCamera(CameraUpdateFactory.newLatLng(point));
 	}
 	
-	/**
-	 * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-	 * just add a marker near Africa.
-	 * <p>
-	 * This should only be called once and when we are sure that {@link #mMap} is not null.
-	 */
-	private void setUpMap() 
-	{
-	    mMap.setMyLocationEnabled(true);
+	@Override
+	public void onMapLongClick(LatLng point) {
+		tvLocInfo.setText("New marker added@" + point.toString());
+		myMap.addMarker(new MarkerOptions().position(point).title(point.toString()));
 	}
 
+	@Override
+	protected void onPause() {
+		myMap.setLocationSource(null);
+		myLocationManager.removeUpdates(this);
+	     
+		super.onPause();
+	 }
 	
-	@Override
-	public void onLocationChanged(Location location) {
-//		if( mListener != null )
-//        {
-//            mListener.onLocationChanged( location );
-// 
-//            mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-//        }
-		
-//		if( mListener != null )
-//	    {
-//	        mListener.onLocationChanged( location );
-//	 
-//	        LatLngBounds bounds = this.mMap.getProjection().getVisibleRegion().latLngBounds;
-//	 
-//	        if(!bounds.contains(new LatLng(location.getLatitude(), location.getLongitude())))
-//	        {
-//	             //Move the camera to the user's location once it's available!
-//	             mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-//	        }
-//	    }
-		
-		changeMapLocation(location);
-	}
-	
-	private void changeMapLocation(Location location) {
-        LatLng latlong = new LatLng(location.getLatitude(),
-                location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15));
-
-        // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-    }
-
-	@Override
-	public void onProviderDisabled(String arg0) {
-		Toast.makeText(this, "Provider disabled", Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onProviderEnabled(String arg0) {
-		Toast.makeText(this, "Provider enabled", Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		Toast.makeText(this, "Status changed", Toast.LENGTH_SHORT).show();
-	}
-
 	@Override
 	public void activate(OnLocationChangedListener listener) {
-		mListener = listener;
+		myLocationListener = listener;
 	}
 
 	@Override
 	public void deactivate() {
-		mListener = null;
+		myLocationListener = null;
 	}
 
+	@Override
+	public void onLocationChanged(Location location) {
+		if (myLocationListener != null) {
+			myLocationListener.onLocationChanged(location);
+			
+			double lat = location.getLatitude();
+			double lon = location.getLongitude();
+			
+			tvLocInfo.setText(
+					"lat: " + lat + "\n" +
+					"lon: " + lon);
+			
+			LatLng latlng= new LatLng(location.getLatitude(), location.getLongitude());
+			myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 13));
+		}
+	}
+
+	@Override
+	public void onProviderDisabled(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		// TODO Auto-generated method stub
+		
+	}
 }
