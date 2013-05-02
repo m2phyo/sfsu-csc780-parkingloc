@@ -56,6 +56,7 @@
 	              android:layout_marginTop="5dip"
 	              android:layout_marginBottom="20dip"
 	              android:id="@+id/loginEmail"
+	              android:hint="email@example.com"
 	              android:inputType="textEmailAddress"
 	              android:singleLine="true"/>
 
@@ -71,6 +72,7 @@
 	              android:layout_height="wrap_content"
 	              android:layout_marginTop="5dip"
 	              android:id="@+id/loginPassword"
+	              android:hint="•••••••"
 	              android:singleLine="true"
 	              android:password="true"/>
 	        

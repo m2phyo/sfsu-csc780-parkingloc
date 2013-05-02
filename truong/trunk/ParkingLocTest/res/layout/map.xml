@@ -3,18 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
-
-    <TextView
-        android:id="@+id/tv_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tv_location"
         class="com.google.android.gms.maps.MapFragment"/>
+    
+    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#A0FFFFFF" >
+        <TextView
+	        android:id="@+id/tv_location"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+        
+    </LinearLayout>
 <!-- 
     <Button
         android:id="@+id/currentLocation"
@@ -26,13 +32,34 @@
         android:text="Current Location" />
  -->
 
-    <Button
+    <ImageButton
+        android:id="@+id/current_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:maxHeight="@dimen/icon_size"
+        android:maxWidth="@dimen/icon_size"
+        android:src="@drawable/location" />
+
+    <ImageButton
         android:id="@+id/home_button"
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Home" />
+        android:maxHeight="@dimen/icon_size"
+        android:maxWidth="@dimen/icon_size"
+        android:src="@drawable/home2" />
+
+    <ImageButton
+        android:id="@+id/refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/current_location"
+        android:layout_toRightOf="@+id/current_location"
+        android:maxHeight="@dimen/icon_size"
+        android:maxWidth="@dimen/icon_size"
+        android:src="@drawable/refresh" />
 
 </RelativeLayout>
