@@ -39,16 +39,14 @@ To do next 2 weeks:
    # Show available parking spot within the radius of home location.
    # Tab on location and make reservation.
    # Make intent to get navigation to tab location from current location.
-
-- working on the UI
-- show available parking spots
-- login screen
-- register screen
-- profile screen - updating profile, password
-- update location spots
-- base on home location, querry parking spots around half mile
-- tap on spot, reserver the spot - marked USED in db
-intent to navigate, drive to the spot
+   # Working on the UI
+   # Show available parking spots
+   # Login screen
+   # Register screen
+   # Profile screen    # updating profile, password
+   # Update location spots
+   # Base on home location, querry parking spots around half mile
+   # Tap on spot, reserver the spot    # marked USED in db intent to navigate, drive to the spot
 
 == Week 4 ==
 
