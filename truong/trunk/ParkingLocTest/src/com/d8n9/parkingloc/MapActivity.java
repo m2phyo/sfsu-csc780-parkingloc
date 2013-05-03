@@ -9,6 +9,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.LocationSource;
@@ -17,7 +18,9 @@ import com.google.android.gms.maps.MapFragment;
 //import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
@@ -44,7 +47,7 @@ import android.widget.Toast;
  
 public class MapActivity 
 			extends Activity 
-			implements OnMapClickListener, OnMapLongClickListener, LocationSource, LocationListener, OnMarkerDragListener{
+			implements OnCameraChangeListener, OnMapClickListener, OnMapLongClickListener, LocationSource, LocationListener, OnMarkerDragListener{
 	
 	final int RQS_GooglePlayServices = 1;
 	private GoogleMap myMap;
@@ -52,9 +55,12 @@ public class MapActivity
 	Location myLocation;
 	TextView tvLocInfo;
 	
-	ArrayList<LatLng> listPoint = new ArrayList<LatLng>();
-	ArrayList<String> listPointId = new ArrayList<String>();
-	ArrayList<LatLng> availableSpots = new ArrayList<LatLng>();
+	List<LatLng> listPoint = new ArrayList<LatLng>();
+	List<String> listPointId = new ArrayList<String>();
+	List<LatLng> availableSpots = new ArrayList<LatLng>();
+	List<LatLng> currentZoneOld = new ArrayList<LatLng>();
+	List<LatLng> currentZoneNew = new ArrayList<LatLng>();
+	
 	boolean homeMarkerAdded = false;
 	boolean currentLocationMarkerAdded = false;
 	int markerCounter = 0;
@@ -66,8 +72,8 @@ public class MapActivity
 	static final LatLng USA = new LatLng(37.090240, -95.712891);
 	static final LatLng currentLocation = new LatLng(37.723886, -122.477067);
 	static final LatLng home = new LatLng(37.782426, -122.416223);
+	
 	LatLng spot1 = new LatLng(37.783130, -122.418509);
-//	availableSpots.add(spot1);
 	LatLng spot2 = new LatLng(37.781247, -122.418981);
 	LatLng spot3 = new LatLng(37.778737, -122.418187);
 	LatLng spot4 = new LatLng(37.780976, -122.414002);
@@ -87,6 +93,20 @@ public class MapActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
+		
+		availableSpots.add(spot1);
+		availableSpots.add(spot2);
+		availableSpots.add(spot3);
+		availableSpots.add(spot4);
+		availableSpots.add(spot5);
+		availableSpots.add(spot6);
+		availableSpots.add(spot7);
+		availableSpots.add(spot8);
+		availableSpots.add(spot9);
+		availableSpots.add(spot10);
+		availableSpots.add(spot11);
+		availableSpots.add(spot12);
+		
 		
 		tvLocInfo = (TextView)findViewById(R.id.tv_location);
 		
@@ -120,6 +140,9 @@ public class MapActivity
 		// 
 		myMap.setOnMarkerDragListener(this);
 		
+		//
+		myMap.setOnCameraChangeListener(this);
+		
 		// Home button on click
 		findViewById(R.id.home_button).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
@@ -141,6 +164,35 @@ public class MapActivity
             	}
             }
         });
+		
+		// Refresh button on click
+				findViewById(R.id.refresh_button).setOnClickListener(new OnClickListener() {
+		            public void onClick(View view) {
+		            	myMap.clear();
+		            	LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
+//		        		LatLng NE = bounds.northeast;
+//		        		LatLng SW = bounds.southwest;
+//		                double minLat = SW.latitude;
+//		                double minLng = SW.longitude;
+//		                double maxLat = NE.latitude;
+//		                double maxLng = NE.longitude;
+		                boolean check = false;
+		                if (bounds.contains(currentLocation)) {
+		                	myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
+		            	            .fromResource(R.drawable.current_location)));
+		                }
+		                if (bounds.contains(home)) {
+		                	myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
+		            	            .fromResource(R.drawable.home2)));
+		                }
+		        		for (int i=0; i<availableSpots.size(); i++) {
+		        			check = bounds.contains(availableSpots.get(i));
+		        			if (check) {
+		        				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).snippet("Spot").title("Available Spot").draggable(true));
+		        			}
+		        		}
+		            }
+		        });
 //		
 //		Geocoder g = new Geocoder(this, Locale.getDefault());
 //		try {
@@ -277,29 +329,32 @@ public class MapActivity
 			
 			@Override
 			public void onFinish() {
-				if (!homeMarkerAdded) {
-            		myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
-            	            .fromResource(R.drawable.home2)));
-            		homeMarkerAdded = true;
-            	}
+//				if (!homeMarkerAdded) {
+//            		myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
+//            	            .fromResource(R.drawable.home2)));
+//            		homeMarkerAdded = true;
+//            	}
+				myMap.clear();
+				myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
+        	            .fromResource(R.drawable.home2)));
 			}
 		};
 		
 	CancelableCallback addCurrentLocationMarkerCallback =
-			new CancelableCallback(){
-				@Override
-				public void onCancel() {
-				}
-				
-				@Override
-				public void onFinish() {
-					if (!currentLocationMarkerAdded) {
-	            		myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
-	            	            .fromResource(R.drawable.current_location)));
-	            		currentLocationMarkerAdded = true;
-	            	}
-				}
-			};
+		new CancelableCallback(){
+			@Override
+			public void onCancel() {
+			}
+			
+			@Override
+			public void onFinish() {
+				if (!currentLocationMarkerAdded) {
+            		myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
+            	            .fromResource(R.drawable.current_location)));
+            		currentLocationMarkerAdded = true;
+            	}
+			}
+		};
 
 	@Override
 	public void onMapClick(LatLng point) {
@@ -337,6 +392,14 @@ public class MapActivity
 	@Override
 	public void onMarkerDragStart(Marker marker) {
 //		tempLL = marker.getPosition();
+		
+	}
+
+	@Override
+	public void onCameraChange(CameraPosition position) {
+		// TODO Auto-generated method stub
+		tvLocInfo.setText("CameraPosition: " + position);
+		
 		
 	}
 }
