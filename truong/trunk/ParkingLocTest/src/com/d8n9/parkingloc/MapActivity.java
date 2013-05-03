@@ -42,7 +42,8 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
  
-public class MapActivity extends Activity 
+public class MapActivity 
+			extends Activity 
 			implements OnMapClickListener, OnMapLongClickListener, LocationSource, LocationListener, OnMarkerDragListener{
 	
 	final int RQS_GooglePlayServices = 1;
@@ -52,8 +53,11 @@ public class MapActivity extends Activity
 	TextView tvLocInfo;
 	
 	ArrayList<LatLng> listPoint = new ArrayList<LatLng>();
+	ArrayList<String> listPointId = new ArrayList<String>();
+	ArrayList<LatLng> availableSpots = new ArrayList<LatLng>();
 	boolean homeMarkerAdded = false;
 	boolean currentLocationMarkerAdded = false;
+	int markerCounter = 0;
 	
 	LocationManager myLocationManager = null;
 	OnLocationChangedListener myLocationListener = null;
@@ -62,6 +66,22 @@ public class MapActivity extends Activity
 	static final LatLng USA = new LatLng(37.090240, -95.712891);
 	static final LatLng currentLocation = new LatLng(37.723886, -122.477067);
 	static final LatLng home = new LatLng(37.782426, -122.416223);
+	LatLng spot1 = new LatLng(37.783130, -122.418509);
+//	availableSpots.add(spot1);
+	LatLng spot2 = new LatLng(37.781247, -122.418981);
+	LatLng spot3 = new LatLng(37.778737, -122.418187);
+	LatLng spot4 = new LatLng(37.780976, -122.414002);
+	LatLng spot5 = new LatLng(37.778144, -122.427092);
+	LatLng spot6 = new LatLng(37.789981, -122.424259);
+	
+	LatLng spot7 = new LatLng(37.722358, -122.473569);
+	LatLng spot8 = new LatLng(37.719999, -122.473826);
+	LatLng spot9 = new LatLng(37.726058, -122.477324);
+	LatLng spot10 = new LatLng(37.730335, -122.486358);
+	LatLng spot11 = new LatLng(37.719914, -122.483268);
+	LatLng spot12 = new LatLng(37.717504, -122.479405);
+	
+	LatLng tempLL = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -258,7 +278,7 @@ public class MapActivity extends Activity
 			@Override
 			public void onFinish() {
 				if (!homeMarkerAdded) {
-            		myMap.addMarker(new MarkerOptions().position(home).title("Home").icon(BitmapDescriptorFactory
+            		myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
             	            .fromResource(R.drawable.home2)));
             		homeMarkerAdded = true;
             	}
@@ -274,7 +294,7 @@ public class MapActivity extends Activity
 				@Override
 				public void onFinish() {
 					if (!currentLocationMarkerAdded) {
-	            		myMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location").icon(BitmapDescriptorFactory
+	            		myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
 	            	            .fromResource(R.drawable.current_location)));
 	            		currentLocationMarkerAdded = true;
 	            	}
@@ -290,8 +310,9 @@ public class MapActivity extends Activity
 	@Override
 	public void onMapLongClick(LatLng point) {
 		tvLocInfo.setText("New marker added @ " + point.toString());
-		myMap.addMarker(new MarkerOptions().position(point).title(point.toString()).draggable(true));
+		myMap.addMarker(new MarkerOptions().position(point).snippet("Point").title(point.toString()).draggable(true));
 		listPoint.add(point);
+		markerCounter++;
 	}
 
 	@Override
@@ -302,13 +323,20 @@ public class MapActivity extends Activity
 
 	@Override
 	public void onMarkerDragEnd(Marker marker) {
-		// TODO Auto-generated method stub
-		
+//		for (int i=0; i<listPoint.size(); i++) {
+//			if (listPoint.get(i) == tempLL) {
+//				marker.setPosition(marker.getPosition());
+//				marker.setTitle(marker.getPosition().toString());
+//				listPoint.add(i, marker);
+//			}
+//		}
+		tvLocInfo.setText("Marker ID: " + marker.getId());
+//		tvLocInfo.setText("Marker ID: " + marker.getId() + "\n" + listPoint.get(0) + "\n" + listPoint.get(1) + "\n" + listPoint.get(2));
 	}
 
 	@Override
 	public void onMarkerDragStart(Marker marker) {
-		// TODO Auto-generated method stub
+//		tempLL = marker.getPosition();
 		
 	}
 }
