@@ -92,6 +92,7 @@ public class MapActivity
 	// products JSONArray
 	JSONArray locations = null;
 	
+	List<Integer> availableSpotsId = new ArrayList<Integer>();
 	List<String> availableSpotsName = new ArrayList<String>();
 	List<LatLng> listPoint = new ArrayList<LatLng>();
 	List<String> listPointId = new ArrayList<String>();
@@ -355,7 +356,7 @@ public class MapActivity
 			@Override
 			public void onFinish() {
 				if (!homeMarkerAdded) {
-            		myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
+            		myMap.addMarker(new MarkerOptions().position(home).snippet("home").title("Home").icon(BitmapDescriptorFactory
             	            .fromResource(R.drawable.home2)));
             		homeMarkerAdded = true;
             	}
@@ -371,7 +372,7 @@ public class MapActivity
 			@Override
 			public void onFinish() {
 				if (!currentLocationMarkerAdded) {
-            		myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
+            		myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("current location").title("Current Location").icon(BitmapDescriptorFactory
             	            .fromResource(R.drawable.current_location)));
             		currentLocationMarkerAdded = true;
             	}
@@ -427,9 +428,19 @@ public class MapActivity
 
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-		// TODO Auto-generated method stub
+//		LatLng temp = marker.getPosition();
+//		double tempLat = temp.latitude;
+//		double tempLng = temp.longitude;
+//		Toast.makeText(getApplicationContext(), marker.getSnippet(), Toast.LENGTH_SHORT).show();
 		
-		Toast.makeText(getApplicationContext(), "InfoWindow is clicked", Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(MapActivity.this, UpdateLocationIsTaken.class);
+		// Creating a bundle for next activity
+		Bundle b = new Bundle();
+		b.putInt("id", Integer.parseInt(marker.getSnippet())); // Your id
+		b.putString("name", marker.getTitle());
+		intent.putExtras(b); //Put your id to your next Intent
+		startActivity(intent);
+//		finish();
 	}
 	
 	/**
@@ -480,12 +491,13 @@ public class MapActivity
 						JSONObject c = locations.getJSONObject(i);
 
 						// Storing each json item in variable
-						String id = c.getString(TAG_LID);
+						Integer id = c.getInt(TAG_LID);
 						String name = c.getString(TAG_NAME);
 						Double latitude = c.getDouble(TAG_LATITUDE);
 						Double longitude = c.getDouble(TAG_LONGITUDE);
 						
-						availableSpotsName.add (name);
+						availableSpotsId.add(id);
+						availableSpotsName.add(name);
 						availableSpots.add(new LatLng(latitude, longitude));
 
 					}
@@ -527,7 +539,7 @@ public class MapActivity
     		for (int i=0; i<availableSpots.size(); i++) {
     			check = bounds.contains(availableSpots.get(i));
     			if (check) {
-    				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).title(availableSpotsName.get(i)).draggable(true));
+    				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).snippet(availableSpotsId.get(i).toString()).title(availableSpotsName.get(i)).draggable(true));
     			}
     		}
 		}

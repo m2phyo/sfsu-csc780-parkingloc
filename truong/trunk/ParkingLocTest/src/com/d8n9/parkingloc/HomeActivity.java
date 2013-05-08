@@ -1,5 +1,6 @@
 package com.d8n9.parkingloc;
 
+import com.d8n9.parkingloc.locationinfo.*;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ public class HomeActivity extends TabActivity {
         // Tab for List
         TabSpec listspec = tabHost.newTabSpec("List");        
         listspec.setIndicator("List", getResources().getDrawable(R.drawable.list_tab));
-        Intent listIntent = new Intent(this, ListActivity.class);
+        Intent listIntent = new Intent(this, LocListActivity.class);
         listspec.setContent(listIntent);
          
         // Tab for Account
