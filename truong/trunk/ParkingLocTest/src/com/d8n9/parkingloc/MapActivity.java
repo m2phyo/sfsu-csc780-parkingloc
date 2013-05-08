@@ -215,25 +215,7 @@ public class MapActivity
             	//Calling background AsyncTask to get all the Locations from Database
             	new LoadAllLocations().execute();
             	
-            	LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
-
-                boolean check = false;
-                if (currentLocationMarkerAdded) {
-                	myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
-            	            .fromResource(R.drawable.current_location)));
-//                	currentLocationMarkerAdded = false;
-                }
-                if (homeMarkerAdded) {
-                	myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
-            	            .fromResource(R.drawable.home2)));
-//                	homeMarkerAdded = false;
-                }
-        		for (int i=0; i<availableSpots.size(); i++) {
-        			check = bounds.contains(availableSpots.get(i));
-        			if (check) {
-        				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).title(availableSpotsName.get(i)).draggable(true));
-        			}
-        		}
+            	
             }
         });
 //		
@@ -446,6 +428,7 @@ public class MapActivity
 	@Override
 	public void onInfoWindowClick(Marker marker) {
 		// TODO Auto-generated method stub
+		
 		Toast.makeText(getApplicationContext(), "InfoWindow is clicked", Toast.LENGTH_SHORT).show();
 	}
 	
@@ -528,6 +511,25 @@ public class MapActivity
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
+			LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
+
+            boolean check = false;
+            if (currentLocationMarkerAdded) {
+            	myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
+        	            .fromResource(R.drawable.current_location)));
+//            	currentLocationMarkerAdded = false;
+            }
+            if (homeMarkerAdded) {
+            	myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
+        	            .fromResource(R.drawable.home2)));
+//            	homeMarkerAdded = false;
+            }
+    		for (int i=0; i<availableSpots.size(); i++) {
+    			check = bounds.contains(availableSpots.get(i));
+    			if (check) {
+    				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).title(availableSpotsName.get(i)).draggable(true));
+    			}
+    		}
 		}
 	
 	}
