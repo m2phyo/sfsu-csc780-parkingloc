@@ -388,7 +388,7 @@ public class MapActivity
 	@Override
 	public void onMapLongClick(LatLng point) {
 		tvLocInfo.setText("New marker added @ " + point.toString());
-		myMap.addMarker(new MarkerOptions().position(point).snippet("Point").title(point.toString()).draggable(true));
+		myMap.addMarker(new MarkerOptions().position(point).snippet("Click to store this spot").title("New Spot").draggable(true));
 		listPoint.add(point);
 		markerCounter++;
 	}
@@ -432,12 +432,20 @@ public class MapActivity
 //		double tempLat = temp.latitude;
 //		double tempLng = temp.longitude;
 //		Toast.makeText(getApplicationContext(), marker.getSnippet(), Toast.LENGTH_SHORT).show();
+		double currLat = currentLocation.latitude;			// current location
+		double currLng = currentLocation.longitude;
+		double destLat = marker.getPosition().latitude;		// destination
+		double destLng = marker.getPosition().longitude;
 		
 		Intent intent = new Intent(MapActivity.this, UpdateLocationIsTaken.class);
 		// Creating a bundle for next activity
 		Bundle b = new Bundle();
-		b.putInt("id", Integer.parseInt(marker.getSnippet())); // Your id
-		b.putString("name", marker.getTitle());
+		b.putInt("id", Integer.parseInt(marker.getSnippet()));	// Marker Id
+		b.putString("name", marker.getTitle());					// Marker Name
+		b.putDouble("currLat", currLat);	// currentLocation latitude
+		b.putDouble("currLng", currLng);	// currentLocation longitude
+		b.putDouble("destLat", destLat);	// destination latitude
+		b.putDouble("destLng", destLng);	// destination longitude
 		intent.putExtras(b); //Put your id to your next Intent
 		startActivity(intent);
 //		finish();
@@ -455,7 +463,7 @@ public class MapActivity
 		protected void onPreExecute() {
 			super.onPreExecute();
 			pDialog = new ProgressDialog(MapActivity.this);
-			pDialog.setMessage("Loading products. Please wait...");
+			pDialog.setMessage("Loading locations from database. Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();

@@ -63,6 +63,13 @@
               android:text="Location Description:"
               android:textColor="#372c24" />
 
+          <TextView
+              android:id="@+id/descInfo"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:padding="5dip"
+              android:textStyle="bold"
+              android:textColor="#372c24" />
 
           <!-- Error message -->
 
@@ -74,7 +81,7 @@
               android:textColor="#e30000"
               android:textStyle="bold" />
 
-          <!-- Add Button -->
+          <!-- Reserve Button -->
 
           <Button
               android:id="@+id/reserveButton"
@@ -85,11 +92,23 @@
               android:text="Reserve"
               android:textColor="#025f7c"
               android:textSize="20dip" />
+          
+          <!-- Navigate Button -->
+
+          <Button
+              android:id="@+id/navigateButton"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dip"
+              android:gravity="center"
+              android:text="Navigate"
+              android:textColor="#025f7c"
+              android:textSize="20dip" />
 
           <!-- Cancel -->
 
           <Button
-              android:id="@+id/cancel"
+              android:id="@+id/cancelToMap"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
