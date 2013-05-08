@@ -10,6 +10,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.LocationSource;
@@ -47,7 +48,7 @@ import android.widget.Toast;
  
 public class MapActivity 
 			extends Activity 
-			implements OnCameraChangeListener, OnMapClickListener, OnMapLongClickListener, LocationSource, LocationListener, OnMarkerDragListener{
+			implements OnCameraChangeListener, OnMapClickListener, OnMapLongClickListener, LocationSource, LocationListener, OnMarkerDragListener, OnInfoWindowClickListener{
 	
 	final int RQS_GooglePlayServices = 1;
 	private GoogleMap myMap;
@@ -143,6 +144,9 @@ public class MapActivity
 		//
 		myMap.setOnCameraChangeListener(this);
 		
+		//
+		myMap.setOnInfoWindowClickListener(this);
+		
 		// Home button on click
 		findViewById(R.id.home_button).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
@@ -166,33 +170,30 @@ public class MapActivity
         });
 		
 		// Refresh button on click
-				findViewById(R.id.refresh_button).setOnClickListener(new OnClickListener() {
-		            public void onClick(View view) {
-		            	myMap.clear();
-		            	LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
-//		        		LatLng NE = bounds.northeast;
-//		        		LatLng SW = bounds.southwest;
-//		                double minLat = SW.latitude;
-//		                double minLng = SW.longitude;
-//		                double maxLat = NE.latitude;
-//		                double maxLng = NE.longitude;
-		                boolean check = false;
-		                if (bounds.contains(currentLocation)) {
-		                	myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
-		            	            .fromResource(R.drawable.current_location)));
-		                }
-		                if (bounds.contains(home)) {
-		                	myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
-		            	            .fromResource(R.drawable.home2)));
-		                }
-		        		for (int i=0; i<availableSpots.size(); i++) {
-		        			check = bounds.contains(availableSpots.get(i));
-		        			if (check) {
-		        				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).snippet("Spot").title("Available Spot").draggable(true));
-		        			}
-		        		}
-		            }
-		        });
+		findViewById(R.id.refresh_button).setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+            	myMap.clear();
+            	LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
+
+                boolean check = false;
+                if (currentLocationMarkerAdded) {
+                	myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
+            	            .fromResource(R.drawable.current_location)));
+//                	currentLocationMarkerAdded = false;
+                }
+                if (homeMarkerAdded) {
+                	myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
+            	            .fromResource(R.drawable.home2)));
+//                	homeMarkerAdded = false;
+                }
+        		for (int i=0; i<availableSpots.size(); i++) {
+        			check = bounds.contains(availableSpots.get(i));
+        			if (check) {
+        				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).snippet("Spot").title("Available Spot").draggable(true));
+        			}
+        		}
+            }
+        });
 //		
 //		Geocoder g = new Geocoder(this, Locale.getDefault());
 //		try {
@@ -329,14 +330,11 @@ public class MapActivity
 			
 			@Override
 			public void onFinish() {
-//				if (!homeMarkerAdded) {
-//            		myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
-//            	            .fromResource(R.drawable.home2)));
-//            		homeMarkerAdded = true;
-//            	}
-				myMap.clear();
-				myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
-        	            .fromResource(R.drawable.home2)));
+				if (!homeMarkerAdded) {
+            		myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
+            	            .fromResource(R.drawable.home2)));
+            		homeMarkerAdded = true;
+            	}
 			}
 		};
 		
@@ -401,5 +399,11 @@ public class MapActivity
 		tvLocInfo.setText("CameraPosition: " + position);
 		
 		
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+		// TODO Auto-generated method stub
+		Toast.makeText(getApplicationContext(), "InfoWindow is clicked", Toast.LENGTH_SHORT).show();
 	}
 }
