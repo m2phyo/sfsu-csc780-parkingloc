@@ -2,9 +2,17 @@ package com.d8n9.parkingloc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.d8n9.parkingloc.locationinfo.LocListActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +37,7 @@ import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
@@ -36,13 +45,17 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 //import android.support.v4.app.FragmentActivity;
 //import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
  
@@ -56,6 +69,30 @@ public class MapActivity
 	Location myLocation;
 	TextView tvLocInfo;
 	
+	// JSON Node names
+	private static final String TAG_SUCCESS = "success";
+	private static final String TAG_LOCATIONS = "location_info";
+	private static final String TAG_TASK = "get";
+	private static final String TAG_LID = "loc_id";
+	private static final String TAG_NAME = "loc_name";
+	private static final String TAG_LATITUDE = "loc_latitude";
+	private static final String TAG_LONGITUDE = "loc_longitude";
+	
+	// url to get all products list
+	private static String url_all_products = "http://thecity.sfsu.edu/~m2phyo/getLocation.php";
+	
+	// Progress Dialog
+	private ProgressDialog pDialog;
+
+	// Creating JSON Parser object
+	JSONParser jParser = new JSONParser();
+
+	ArrayList<HashMap<String, String>> locationsList;
+	
+	// products JSONArray
+	JSONArray locations = null;
+	
+	List<String> availableSpotsName = new ArrayList<String>();
 	List<LatLng> listPoint = new ArrayList<LatLng>();
 	List<String> listPointId = new ArrayList<String>();
 	List<LatLng> availableSpots = new ArrayList<LatLng>();
@@ -74,19 +111,19 @@ public class MapActivity
 	static final LatLng currentLocation = new LatLng(37.723886, -122.477067);
 	static final LatLng home = new LatLng(37.782426, -122.416223);
 	
-	LatLng spot1 = new LatLng(37.783130, -122.418509);
-	LatLng spot2 = new LatLng(37.781247, -122.418981);
-	LatLng spot3 = new LatLng(37.778737, -122.418187);
-	LatLng spot4 = new LatLng(37.780976, -122.414002);
-	LatLng spot5 = new LatLng(37.778144, -122.427092);
-	LatLng spot6 = new LatLng(37.789981, -122.424259);
-	
-	LatLng spot7 = new LatLng(37.722358, -122.473569);
-	LatLng spot8 = new LatLng(37.719999, -122.473826);
-	LatLng spot9 = new LatLng(37.726058, -122.477324);
-	LatLng spot10 = new LatLng(37.730335, -122.486358);
-	LatLng spot11 = new LatLng(37.719914, -122.483268);
-	LatLng spot12 = new LatLng(37.717504, -122.479405);
+//	LatLng spot1 = new LatLng(37.783130, -122.418509);
+//	LatLng spot2 = new LatLng(37.781247, -122.418981);
+//	LatLng spot3 = new LatLng(37.778737, -122.418187);
+//	LatLng spot4 = new LatLng(37.780976, -122.414002);
+//	LatLng spot5 = new LatLng(37.778144, -122.427092);
+//	LatLng spot6 = new LatLng(37.789981, -122.424259);
+//	
+//	LatLng spot7 = new LatLng(37.722358, -122.473569);
+//	LatLng spot8 = new LatLng(37.719999, -122.473826);
+//	LatLng spot9 = new LatLng(37.726058, -122.477324);
+//	LatLng spot10 = new LatLng(37.730335, -122.486358);
+//	LatLng spot11 = new LatLng(37.719914, -122.483268);
+//	LatLng spot12 = new LatLng(37.717504, -122.479405);
 	
 	LatLng tempLL = null;
 	
@@ -95,18 +132,19 @@ public class MapActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
 		
-		availableSpots.add(spot1);
-		availableSpots.add(spot2);
-		availableSpots.add(spot3);
-		availableSpots.add(spot4);
-		availableSpots.add(spot5);
-		availableSpots.add(spot6);
-		availableSpots.add(spot7);
-		availableSpots.add(spot8);
-		availableSpots.add(spot9);
-		availableSpots.add(spot10);
-		availableSpots.add(spot11);
-		availableSpots.add(spot12);
+		
+//		availableSpots.add(spot1);
+//		availableSpots.add(spot2);
+//		availableSpots.add(spot3);
+//		availableSpots.add(spot4);
+//		availableSpots.add(spot5);
+//		availableSpots.add(spot6);
+//		availableSpots.add(spot7);
+//		availableSpots.add(spot8);
+//		availableSpots.add(spot9);
+//		availableSpots.add(spot10);
+//		availableSpots.add(spot11);
+//		availableSpots.add(spot12);
 		
 		
 		tvLocInfo = (TextView)findViewById(R.id.tv_location);
@@ -173,6 +211,10 @@ public class MapActivity
 		findViewById(R.id.refresh_button).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
             	myMap.clear();
+            	
+            	//Calling background AsyncTask to get all the Locations from Database
+            	new LoadAllLocations().execute();
+            	
             	LatLngBounds bounds = myMap.getProjection().getVisibleRegion().latLngBounds;
 
                 boolean check = false;
@@ -189,7 +231,7 @@ public class MapActivity
         		for (int i=0; i<availableSpots.size(); i++) {
         			check = bounds.contains(availableSpots.get(i));
         			if (check) {
-        				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).snippet("Spot").title("Available Spot").draggable(true));
+        				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).title(availableSpotsName.get(i)).draggable(true));
         			}
         		}
             }
@@ -406,4 +448,88 @@ public class MapActivity
 		// TODO Auto-generated method stub
 		Toast.makeText(getApplicationContext(), "InfoWindow is clicked", Toast.LENGTH_SHORT).show();
 	}
+	
+	/**
+	 * Background Async Task to Load all locations by making HTTP Request
+	 * */
+	class LoadAllLocations extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(MapActivity.this);
+			pDialog.setMessage("Loading products. Please wait...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+
+		/**
+		 * getting All locations from url
+		 * */
+		protected String doInBackground(String... args) {
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			
+			params.add(new BasicNameValuePair("tag", TAG_TASK));
+			params.add(new BasicNameValuePair("loc_isTaken", "0"));
+			
+			// getting JSON string from URL
+			JSONObject json = jParser.makeHttpRequest(url_all_products, "POST", params);
+			
+			// Check your log cat for JSON reponse
+			Log.d("All Locations: ", json.toString());
+
+			try {
+				// Checking for SUCCESS TAG
+				int success = json.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					// products found
+					// Getting Array of Location
+					locations = json.getJSONArray(TAG_LOCATIONS);
+
+					// looping through All Products
+					for (int i = 0; i < locations.length(); i++) {
+						JSONObject c = locations.getJSONObject(i);
+
+						// Storing each json item in variable
+						String id = c.getString(TAG_LID);
+						String name = c.getString(TAG_NAME);
+						Double latitude = c.getDouble(TAG_LATITUDE);
+						Double longitude = c.getDouble(TAG_LONGITUDE);
+						
+						availableSpotsName.add (name);
+						availableSpots.add(new LatLng(latitude, longitude));
+
+					}
+				} else {
+//					// no products found
+//					// Launch Add New product Activity
+//					Intent i = new Intent(getApplicationContext(),
+//							NewProductActivity.class);
+//					// Closing all previous activities
+//					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//					startActivity(i);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog after getting all products
+			pDialog.dismiss();
+		}
+	
+	}
+	
 }
