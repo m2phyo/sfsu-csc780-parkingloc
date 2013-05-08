@@ -428,27 +428,32 @@ public class MapActivity
 
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-//		LatLng temp = marker.getPosition();
-//		double tempLat = temp.latitude;
-//		double tempLng = temp.longitude;
 //		Toast.makeText(getApplicationContext(), marker.getSnippet(), Toast.LENGTH_SHORT).show();
+		
 		double currLat = currentLocation.latitude;			// current location
 		double currLng = currentLocation.longitude;
 		double destLat = marker.getPosition().latitude;		// destination
 		double destLng = marker.getPosition().longitude;
 		
-		Intent intent = new Intent(MapActivity.this, UpdateLocationIsTaken.class);
 		// Creating a bundle for next activity
 		Bundle b = new Bundle();
-		b.putInt("id", Integer.parseInt(marker.getSnippet()));	// Marker Id
+		
 		b.putString("name", marker.getTitle());					// Marker Name
 		b.putDouble("currLat", currLat);	// currentLocation latitude
 		b.putDouble("currLng", currLng);	// currentLocation longitude
 		b.putDouble("destLat", destLat);	// destination latitude
 		b.putDouble("destLng", destLng);	// destination longitude
-		intent.putExtras(b); //Put your id to your next Intent
-		startActivity(intent);
-//		finish();
+		
+		if ("New Spot".equals(marker.getTitle())) {
+			Intent intent = new Intent(MapActivity.this, UpdateLocationToDb.class);
+			intent.putExtras(b);	// put bundle into intent
+			startActivity(intent);
+		} else {
+			b.putInt("id", Integer.parseInt(marker.getSnippet()));	// Marker Id
+			Intent intent = new Intent(MapActivity.this, UpdateLocationIsTaken.class);
+			intent.putExtras(b);	// put bundle into intent
+			startActivity(intent);
+		}
 	}
 	
 	/**

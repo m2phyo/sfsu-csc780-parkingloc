@@ -60,7 +60,7 @@
           <TextView
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
-              android:text="LocationName"
+              android:text="Location Name"
               android:textColor="#372c24" />
 
           <EditText
@@ -72,7 +72,7 @@
               android:singleLine="true" />
 
           <!-- Address Label -->
-
+<!-- 
           <TextView
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
@@ -86,9 +86,9 @@
               android:layout_weight="1.35"
               android:ems="10"
               android:inputType="textPostalAddress" />
-
-          <!-- Description Repeat -->
-
+ -->
+          <!-- Description -->
+<!-- 
           <TextView
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
@@ -102,6 +102,16 @@
               android:password="true"
               android:singleLine="true" 
               android:inputType="textMultiLine"/>
+ -->
+		<!-- Description -->
+
+		<TextView
+              android:id="@+id/descInfo"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:padding="5dip"
+              android:textStyle="bold"
+              android:textColor="#372c24" />
 
           <!-- Error message -->
 
@@ -128,11 +138,11 @@
           <!-- Cancel -->
 
           <Button
-              android:id="@+id/cancelLoc"
+              android:id="@+id/cancelToMap"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
-              android:text="Cancel"
+              android:text="Back"
               android:textColor="#025f7c"
               android:textSize="20dip" />
       </LinearLayout>
