@@ -86,7 +86,7 @@ public class UpdateLocationToDb extends Activity {
         protected void onPreExecute() {
 			super.onPreExecute();
 			pDialog = new ProgressDialog(UpdateLocationToDb.this);
-			pDialog.setMessage("Login... Please wait... ");
+			pDialog.setMessage("Adding... Please wait... ");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();

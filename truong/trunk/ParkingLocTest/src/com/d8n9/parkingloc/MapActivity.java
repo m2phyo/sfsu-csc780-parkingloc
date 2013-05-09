@@ -212,6 +212,9 @@ public class MapActivity
 		findViewById(R.id.refresh_button).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
             	myMap.clear();
+            	availableSpots.clear();
+            	availableSpotsId.clear();
+            	availableSpotsName.clear();
             	
             	//Calling background AsyncTask to get all the Locations from Database
             	new LoadAllLocations().execute();
@@ -388,7 +391,7 @@ public class MapActivity
 	@Override
 	public void onMapLongClick(LatLng point) {
 		tvLocInfo.setText("New marker added @ " + point.toString());
-		myMap.addMarker(new MarkerOptions().position(point).snippet("Click to store this spot").title("New Spot").draggable(true));
+		myMap.addMarker(new MarkerOptions().position(point).snippet("Click to store this spot").title("New Spot"));
 		listPoint.add(point);
 		markerCounter++;
 	}
@@ -552,7 +555,7 @@ public class MapActivity
     		for (int i=0; i<availableSpots.size(); i++) {
     			check = bounds.contains(availableSpots.get(i));
     			if (check) {
-    				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).snippet(availableSpotsId.get(i).toString()).title(availableSpotsName.get(i)).draggable(true));
+    				myMap.addMarker(new MarkerOptions().position(availableSpots.get(i)).snippet(availableSpotsId.get(i).toString()).title(availableSpotsName.get(i)));
     			}
     		}
 		}
