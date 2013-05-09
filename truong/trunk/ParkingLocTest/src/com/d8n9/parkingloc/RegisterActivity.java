@@ -206,12 +206,12 @@ public class RegisterActivity extends Activity {
          * */
         @Override
         protected void onPreExecute() {
-                        super.onPreExecute();
-                        pDialog = new ProgressDialog(RegisterActivity.this);
-                        pDialog.setMessage("Registering... Please wait...");
-                        pDialog.setIndeterminate(false);
-                        pDialog.setCancelable(true);
-                        pDialog.show();
+            super.onPreExecute();
+            pDialog = new ProgressDialog(RegisterActivity.this);
+            pDialog.setMessage("Registering... Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
         }
         
         /**

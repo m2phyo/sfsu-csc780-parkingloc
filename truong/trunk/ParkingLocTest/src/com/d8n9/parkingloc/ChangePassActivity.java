@@ -16,10 +16,6 @@ public class ChangePassActivity extends Activity {
 		
 		findViewById(R.id.change_pass_back).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
-            	Intent home = new Intent(getApplicationContext(), HomeActivity.class);
-                // Close all views before launching Home
-                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(home);
                 finish();
             }
         });

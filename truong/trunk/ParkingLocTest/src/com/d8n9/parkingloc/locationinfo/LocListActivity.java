@@ -122,7 +122,7 @@ public class LocListActivity extends ListActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			pDialog = new ProgressDialog(LocListActivity.this);
-			pDialog.setMessage("Loading products. Please wait...");
+			pDialog.setMessage("Loading locations... Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();

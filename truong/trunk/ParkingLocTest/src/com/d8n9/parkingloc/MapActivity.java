@@ -446,11 +446,16 @@ public class MapActivity
 		b.putDouble("currLng", currLng);	// currentLocation longitude
 		b.putDouble("destLat", destLat);	// destination latitude
 		b.putDouble("destLng", destLng);	// destination longitude
+		String markerTitle = marker.getTitle();
 		
-		if ("New Spot".equals(marker.getTitle())) {
+		if ("New Spot".equals(markerTitle)) {
 			Intent intent = new Intent(MapActivity.this, UpdateLocationToDb.class);
 			intent.putExtras(b);	// put bundle into intent
 			startActivity(intent);
+		} else if ("Home".equals(markerTitle)) {
+			Toast.makeText(getApplicationContext(), "This is your home", Toast.LENGTH_SHORT).show();
+		} else if ("Current Location".equals(markerTitle)) {
+			Toast.makeText(getApplicationContext(), "This is your current location", Toast.LENGTH_SHORT).show();
 		} else {
 			b.putInt("id", Integer.parseInt(marker.getSnippet()));	// Marker Id
 			Intent intent = new Intent(MapActivity.this, UpdateLocationIsTaken.class);
