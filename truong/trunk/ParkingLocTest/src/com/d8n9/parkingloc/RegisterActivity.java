@@ -247,10 +247,11 @@ public class RegisterActivity extends Activity {
                         int success = response.getInt(KEY_SUCCESS);
          
                         if (success == 1) {
-                            Intent home = new Intent(getApplicationContext(), HomeActivity.class);
-                            // Close all views before launching Home
-                        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(home);
+//                            Intent home = new Intent(getApplicationContext(), HomeActivity.class);
+//                            // Close all views before launching Home
+//	                        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//	                        startActivity(home);
+	                        returnString += "\n" + response.getString("message");
                         } else {
                                 // no products found
                         returnString += "\n" + response.getString("message");

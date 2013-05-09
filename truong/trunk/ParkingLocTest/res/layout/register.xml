@@ -100,7 +100,7 @@
 	        <Button android:id="@+id/btnLinkToLoginScreen"
 	              android:layout_width="fill_parent"
 	              android:layout_height="wrap_content"
-	              android:text="Has account? Login here"
+	              android:text="Back to Login"
 	              android:gravity="center"
 	              android:textSize="20dip"
 	              android:textColor="#025f7c"/>
