@@ -181,6 +181,7 @@ public class LoginActivity extends Activity {
 	            // declare parameters that are passed to PHP script
 	            List<NameValuePair> postParam = new ArrayList<NameValuePair>();
 	            
+	            
 	            postParam.add(new BasicNameValuePair("tag", KEY_TAG));
 	            postParam.add(new BasicNameValuePair("user_name",name));
 	            postParam.add(new BasicNameValuePair("password",password));
@@ -213,17 +214,17 @@ public class LoginActivity extends Activity {
         	} catch (Exception e) {
                 Log.e("log_tag","Error in http connection!!" + e.toString());     
         	}
-            return null;
+            return returnString;
         }
 
 		/**
 		 * After completing background task Dismiss the progress dialog
 		 * **/
-		protected void onPostExecute(String file_url) {
+		protected void onPostExecute(String returnText) {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			try {
-				loginErrorMsg.setText(returnString);
+				loginErrorMsg.setText(returnText);
 			} catch(Exception e){
 				Log.e("log_tag","Error in Display!" + e.toString());;          
 			}
