@@ -190,9 +190,9 @@ containing a value of this type.
         public static final int refresh_button=0x7f04001d;
         public static final int registerEmail=0x7f04001e;
         public static final int registerPassword=0x7f04001f;
+        public static final int registerPasswordRepeat=0x7f040020;
         public static final int register_error=0x7f04000c;
         public static final int repeat_newPassword=0x7f04000b;
-        public static final int repeat_password=0x7f040020;
         public static final int reserveButton=0x7f040026;
         public static final int satellite=0x7f040002;
         public static final int scrollView1=0x7f040005;
@@ -289,15 +289,16 @@ containing a value of this type.
         find the service-side assets. [CHAR LIMIT=25] 
          */
         public static final int common_signin_button_text_long=0x7f05000d;
-        public static final int error_field_required=0x7f05001d;
+        public static final int error_field_required=0x7f05001e;
         public static final int error_invalid_email=0x7f05001a;
-        public static final int error_invalid_email_or_password=0x7f05001c;
+        public static final int error_invalid_email_or_password=0x7f05001d;
         public static final int error_invalid_password=0x7f05001b;
-        public static final int hello_world=0x7f05001f;
+        public static final int error_matching_password=0x7f05001c;
+        public static final int hello_world=0x7f050020;
         public static final int login_progress_signing_in=0x7f050019;
         public static final int prompt_email=0x7f050014;
         public static final int prompt_password=0x7f050015;
-        public static final int title_activity_change_pass=0x7f05001e;
+        public static final int title_activity_change_pass=0x7f05001f;
         public static final int title_activity_home=0x7f050013;
     }
     public static final class style {

@@ -3,6 +3,7 @@ package com.d8n9.parkingloc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.d8n9.parkingloc.LoginActivity.loginProcess;
 import com.d8n9.parkingloc.library.*;
 
 import org.apache.http.NameValuePair;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,10 +26,15 @@ import android.widget.TextView;
 public class RegisterActivity extends Activity {
 	Button btnRegister;
     Button btnLinkToLogin;
-    EditText inputFullName;
     EditText inputEmail;
     EditText inputPassword;
+    EditText inputPasswordRepeat;
     TextView registerErrorMsg;
+    
+    // Values for email and password at the time of the login attempt.
+ 	private String mEmail;
+ 	private String mPassword;
+ 	private String mPasswordRepeat;
  
     // JSON Response node names
     private static String KEY_SUCCESS = "success";
@@ -51,17 +58,18 @@ public class RegisterActivity extends Activity {
         // Set View to register.xml
         setContentView(R.layout.register);
         
-     // Importing all assets like buttons, text fields
-        inputEmail = (EditText) findViewById(R.id.registerEmail);
-        inputPassword = (EditText) findViewById(R.id.registerPassword);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
-        registerErrorMsg = (TextView) findViewById(R.id.register_error);
- 
-        // Register Button Click event
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-            	new registerProcess().execute();
+	    // Importing all assets like buttons, text fields
+		inputEmail = (EditText) findViewById(R.id.registerEmail);
+		inputPassword = (EditText) findViewById(R.id.registerPassword);
+		inputPasswordRepeat = (EditText) findViewById(R.id.registerPasswordRepeat);
+		btnRegister = (Button) findViewById(R.id.btnRegister);
+		btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
+		registerErrorMsg = (TextView) findViewById(R.id.register_error);
+	
+	    // Register Button Click event
+		btnRegister.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View view) {
+		    	attemptRegister();
 //                String name = inputFullName.getText().toString();
 //                String email = inputEmail.getText().toString();
 //                String password = inputPassword.getText().toString();
@@ -114,6 +122,81 @@ public class RegisterActivity extends Activity {
     }
     
     /**
+	 * Attempts to sign in or register the account specified by the login form.
+	 * If there are form errors (invalid email, missing fields, etc.), the
+	 * errors are presented and no actual login attempt is made.
+	 */
+    public void attemptRegister() {
+
+		// Reset errors.
+		inputEmail.setError(null);
+		inputPassword.setError(null);
+
+		// Store values at the time of the login attempt.
+		mEmail = inputEmail.getText().toString();
+		mPassword = inputPassword.getText().toString();
+		mPasswordRepeat = inputPasswordRepeat.getText().toString();
+
+		boolean cancel = false;
+		View focusView = null;
+
+		// Check for a valid password.
+		if (TextUtils.isEmpty(mPassword)) {
+			inputPassword.setError(getString(R.string.error_field_required));
+			focusView = inputPassword;
+			cancel = true;
+		} else if (mPassword.length() < 4) {
+			inputPassword.setError(getString(R.string.error_invalid_password));
+			focusView = inputPassword;
+			cancel = true;
+		} else {
+			// Check for a valid repeated password.
+			if (TextUtils.isEmpty(mPasswordRepeat)) {
+				inputPasswordRepeat.setError(getString(R.string.error_field_required));
+				focusView = inputPasswordRepeat;
+				cancel = true;
+			} else if (mPasswordRepeat.length() < 4) {
+				inputPasswordRepeat.setError(getString(R.string.error_invalid_password));
+				focusView = inputPasswordRepeat;
+				cancel = true;
+			} else if (!mPassword.equals(mPasswordRepeat)) {
+				inputPasswordRepeat.setError(getString(R.string.error_matching_password));
+				focusView = inputPasswordRepeat;
+				cancel = true;
+			}
+		}
+
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mEmail)) {
+			inputEmail.setError(getString(R.string.error_field_required));
+			focusView = inputEmail;
+			cancel = true;
+		} else if (!mEmail.contains("@")) {
+			inputEmail.setError(getString(R.string.error_invalid_email));
+			focusView = inputEmail;
+			cancel = true;
+		} else if (!mEmail.contains(".")) {
+			inputEmail.setError(getString(R.string.error_invalid_email));
+			focusView = inputEmail;
+			cancel = true;
+		}
+
+		if (cancel) {
+			// There was an error; don't attempt login and focus the first
+			// form field with an error.
+			focusView.requestFocus();
+		} else {
+			// Show a progress spinner, and kick off a background task to
+			// perform the user login attempt.
+//			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+//			showProgress(true);
+//			mAuthTask = new UserLoginTask();
+//			mAuthTask.execute((Void) null);
+			new registerProcess().execute();
+		}
+	}
+    
+    /**
      * Background Async Task
      * */
     class registerProcess extends AsyncTask<String, String, String> {
@@ -125,7 +208,7 @@ public class RegisterActivity extends Activity {
         protected void onPreExecute() {
                         super.onPreExecute();
                         pDialog = new ProgressDialog(RegisterActivity.this);
-                        pDialog.setMessage("Register.... Please wait...");
+                        pDialog.setMessage("Registering... Please wait...");
                         pDialog.setIndeterminate(false);
                         pDialog.setCancelable(true);
                         pDialog.show();

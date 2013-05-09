@@ -47,7 +47,7 @@ public class LoginActivity extends Activity {
 	// Progress Dialog
 	private ProgressDialog pDialog;
 	
-	TextView tv;      // TextView to show the result of MySQL query 
+	TextView loginErrorMsg;      // TextView to show the result of MySQL query 
 	String returnString="";   // to store the result of MySQL query after decoding JSON
 	
 	// Creating JSON Parser object
@@ -73,7 +73,7 @@ public class LoginActivity extends Activity {
         inputEmail = (EditText) findViewById(R.id.loginEmail);
         inputPassword = (EditText) findViewById(R.id.loginPassword);
         logButton = (Button) findViewById(R.id.btnLogin);
-        tv = (TextView) findViewById(R.id.login_error);
+        loginErrorMsg = (TextView) findViewById(R.id.login_error);
         
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +163,7 @@ public class LoginActivity extends Activity {
         protected void onPreExecute() {
 			super.onPreExecute();
 			pDialog = new ProgressDialog(LoginActivity.this);
-			pDialog.setMessage("Login.... Please wait...");
+			pDialog.setMessage("Login... Please wait... ");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -223,7 +223,7 @@ public class LoginActivity extends Activity {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			try {
-				tv.setText(returnString);
+				loginErrorMsg.setText(returnString);
 			} catch(Exception e){
 				Log.e("log_tag","Error in Display!" + e.toString());;          
 			}
