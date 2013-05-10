@@ -94,15 +94,19 @@ public class MapActivity
 	
 	List<Integer> availableSpotsId = new ArrayList<Integer>();
 	List<String> availableSpotsName = new ArrayList<String>();
-	List<LatLng> listPoint = new ArrayList<LatLng>();
-	List<String> listPointId = new ArrayList<String>();
 	List<LatLng> availableSpots = new ArrayList<LatLng>();
-	List<LatLng> currentZoneOld = new ArrayList<LatLng>();
-	List<LatLng> currentZoneNew = new ArrayList<LatLng>();
+	
+	// Current location and destination lat/lng
+	double currLat;
+	double currLng;
+	double destLat;
+	double destLng;
+	
+	// Bundle for transfering data between activities
+	Bundle b = new Bundle();
 	
 	boolean homeMarkerAdded = false;
 	boolean currentLocationMarkerAdded = false;
-	int markerCounter = 0;
 	
 	LocationManager myLocationManager = null;
 	OnLocationChangedListener myLocationListener = null;
@@ -112,57 +116,31 @@ public class MapActivity
 	static final LatLng currentLocation = new LatLng(37.723886, -122.477067);
 	static final LatLng home = new LatLng(37.782426, -122.416223);
 	
-//	LatLng spot1 = new LatLng(37.783130, -122.418509);
-//	LatLng spot2 = new LatLng(37.781247, -122.418981);
-//	LatLng spot3 = new LatLng(37.778737, -122.418187);
-//	LatLng spot4 = new LatLng(37.780976, -122.414002);
-//	LatLng spot5 = new LatLng(37.778144, -122.427092);
-//	LatLng spot6 = new LatLng(37.789981, -122.424259);
-//	
-//	LatLng spot7 = new LatLng(37.722358, -122.473569);
-//	LatLng spot8 = new LatLng(37.719999, -122.473826);
-//	LatLng spot9 = new LatLng(37.726058, -122.477324);
-//	LatLng spot10 = new LatLng(37.730335, -122.486358);
-//	LatLng spot11 = new LatLng(37.719914, -122.483268);
-//	LatLng spot12 = new LatLng(37.717504, -122.479405);
-	
-	LatLng tempLL = null;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
 		
-		
-//		availableSpots.add(spot1);
-//		availableSpots.add(spot2);
-//		availableSpots.add(spot3);
-//		availableSpots.add(spot4);
-//		availableSpots.add(spot5);
-//		availableSpots.add(spot6);
-//		availableSpots.add(spot7);
-//		availableSpots.add(spot8);
-//		availableSpots.add(spot9);
-//		availableSpots.add(spot10);
-//		availableSpots.add(spot11);
-//		availableSpots.add(spot12);
-		
-		
+		// Small text view on top of the map
 		tvLocInfo = (TextView)findViewById(R.id.tv_location);
 		
+		// Loading map fragments
 		FragmentManager myFragmentManager = getFragmentManager();
 		MapFragment myMapFragment 
 			= (MapFragment)myFragmentManager.findFragmentById(R.id.map);
 		myMap = myMapFragment.getMap();
 		
 		myMap.setMyLocationEnabled(true);
+		
+		// Setting for on map control buttons
 		myMap.getUiSettings().setMyLocationButtonEnabled(false);
 		myMap.getUiSettings().setZoomControlsEnabled(true);
 		
+		// Select map type
 		myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-		//myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+		// myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		// myMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+		// myMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 		
 		myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -177,13 +155,13 @@ public class MapActivity
 		// Detect long tap on the map
 		myMap.setOnMapLongClickListener(this);
 		
-		// 
+		// Detect drag on marker
 		myMap.setOnMarkerDragListener(this);
 		
-		//
+		// Detect camera screen change
 		myMap.setOnCameraChangeListener(this);
 		
-		//
+		// Detect tap on marker's info window
 		myMap.setOnInfoWindowClickListener(this);
 		
 		// Home button on click
@@ -222,50 +200,6 @@ public class MapActivity
             	
             }
         });
-//		
-//		Geocoder g = new Geocoder(this, Locale.getDefault());
-//		try {
-//			List<Address> addresses = g.getFromLocationName("empire state building", 1);
-//			if (addresses.size() > 0) {
-//				Address singleAdd = addresses.get(0);
-//				if (singleAdd.hasLatitude() && singleAdd.hasLongitude()) {
-//					double selectedLat = singleAdd.getLatitude();
-//		            double selectedLng = singleAdd.getLongitude();
-//		            LatLng place = new LatLng(selectedLat, selectedLng);
-//		            myMap.addMarker(new MarkerOptions().position(place).title("Here is the road location")
-//		            			.snippet("Hon the lads"));
-//				}
-//			}
-//		} catch (IOException e) {
-//            e.printStackTrace();
-//        }
-		
-		
-		// Geocoder: translate an address to longitude and latitude
-//		Geocoder g = new Geocoder(this);
-//	    List<Address> addressList = new ArrayList<Address>();
-//	    String streetName = "San Francisco State University";
-//	    try {
-//	        addressList = g.getFromLocationName(streetName, 1);
-//
-//	    } catch (IOException e) {
-//	        Toast.makeText(this, "Location not found",     Toast.LENGTH_SHORT)
-//	                    .show();
-//	            e.printStackTrace();
-//
-//	    } finally {
-//	    	if (addressList.get(0) != null) {
-//		        Address address = addressList.get(0);
-//	
-//		        if (address.hasLatitude() && address.hasLongitude()) {
-//		            double selectedLat = address.getLatitude();
-//		            double selectedLng = address.getLongitude();
-//		            LatLng place = new LatLng(selectedLat, selectedLng);
-//		            myMap.addMarker(new MarkerOptions().position(place).title("Here is the road location")
-//		            			.snippet("Hon the lads"));
-//		        }
-//	    	}
-//	    }
 	}
 
 	@Override
@@ -276,11 +210,6 @@ public class MapActivity
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		
 		if (resultCode == ConnectionResult.SUCCESS){
-//			Toast.makeText(getApplicationContext(), 
-//					"isGooglePlayServicesAvailable SUCCESS", 
-//					Toast.LENGTH_SHORT).show();
-			
-			// Register for location updates using a Criteria, and a callback on the specified looper thread.
 			myLocationManager.requestLocationUpdates(
 				0L,    //minTime
 				0.0f,    //minDistance
@@ -290,20 +219,18 @@ public class MapActivity
 			
 			// Replaces the location source of the my-location layer.
 			myMap.setLocationSource(this);
-			
 		}else{
 			GooglePlayServicesUtil.getErrorDialog(resultCode, this, RQS_GooglePlayServices);
 		}
-		
 	}
 
 	@Override
 	protected void onPause() {
 		myMap.setLocationSource(null);
 		myLocationManager.removeUpdates(this);
-	     
+
 		super.onPause();
-	 }
+	}
 	
 	@Override
 	public void activate(OnLocationChangedListener listener) {
@@ -323,9 +250,8 @@ public class MapActivity
 			double lat = location.getLatitude();
 			double lon = location.getLongitude();
 			
-			tvLocInfo.setText(
-					"lat: " + lat + "\n" +
-					"lon: " + lon);
+			tvLocInfo.setText(	"lat: " + lat + "\n" +
+								"lon: " + lon);
 			
 			LatLng latlng= new LatLng(location.getLatitude(), location.getLongitude());
 			myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 13));
@@ -341,13 +267,11 @@ public class MapActivity
 	@Override
 	public void onProviderEnabled(String arg0) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	CancelableCallback addHomeMarkerCallback =
@@ -382,80 +306,74 @@ public class MapActivity
 			}
 		};
 
+	// Action on map click
 	@Override
 	public void onMapClick(LatLng point) {
-		tvLocInfo.setText(point.toString());
 		myMap.animateCamera(CameraUpdateFactory.newLatLng(point));
 	}
 	
+	// Action on map click and hold (long click)
 	@Override
 	public void onMapLongClick(LatLng point) {
-		tvLocInfo.setText("New marker added @ " + point.toString());
 		myMap.addMarker(new MarkerOptions().position(point).snippet("Click to store this spot").title("New Spot"));
-		listPoint.add(point);
-		markerCounter++;
 	}
 
+	// Action on dragging marker
 	@Override
 	public void onMarkerDrag(Marker marker) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	// Action on ending dragging marker
 	@Override
 	public void onMarkerDragEnd(Marker marker) {
-//		for (int i=0; i<listPoint.size(); i++) {
-//			if (listPoint.get(i) == tempLL) {
-//				marker.setPosition(marker.getPosition());
-//				marker.setTitle(marker.getPosition().toString());
-//				listPoint.add(i, marker);
-//			}
-//		}
-		tvLocInfo.setText("Marker ID: " + marker.getId());
-//		tvLocInfo.setText("Marker ID: " + marker.getId() + "\n" + listPoint.get(0) + "\n" + listPoint.get(1) + "\n" + listPoint.get(2));
+		
 	}
 
+	// Action on starting dragging marker
 	@Override
 	public void onMarkerDragStart(Marker marker) {
-//		tempLL = marker.getPosition();
 		
 	}
 
+	// Action after camera view change on the map
 	@Override
 	public void onCameraChange(CameraPosition position) {
-		// TODO Auto-generated method stub
 		tvLocInfo.setText("CameraPosition: " + position);
-		
-		
 	}
 
+	// Action on click on marker's info window
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-//		Toast.makeText(getApplicationContext(), marker.getSnippet(), Toast.LENGTH_SHORT).show();
+		currLat = currentLocation.latitude;			// current location
+		currLng = currentLocation.longitude;
+		destLat = marker.getPosition().latitude;		// destination
+		destLng = marker.getPosition().longitude;
 		
-		double currLat = currentLocation.latitude;			// current location
-		double currLng = currentLocation.longitude;
-		double destLat = marker.getPosition().latitude;		// destination
-		double destLng = marker.getPosition().longitude;
-		
-		// Creating a bundle for next activity
-		Bundle b = new Bundle();
-		
-		b.putString("name", marker.getTitle());					// Marker Name
+		// Clear and put variables into bundle
+		b.clear();
+		b.putString("name", marker.getTitle());	// Marker Name
 		b.putDouble("currLat", currLat);	// currentLocation latitude
 		b.putDouble("currLng", currLng);	// currentLocation longitude
 		b.putDouble("destLat", destLat);	// destination latitude
 		b.putDouble("destLng", destLng);	// destination longitude
 		String markerTitle = marker.getTitle();
 		
+		// If this is a new spot
 		if ("New Spot".equals(markerTitle)) {
 			Intent intent = new Intent(MapActivity.this, UpdateLocationToDb.class);
 			intent.putExtras(b);	// put bundle into intent
 			startActivity(intent);
+			
+		// If this is home
 		} else if ("Home".equals(markerTitle)) {
 			Toast.makeText(getApplicationContext(), "This is your home", Toast.LENGTH_SHORT).show();
+			
+		// If this is current location
 		} else if ("Current Location".equals(markerTitle)) {
 			Toast.makeText(getApplicationContext(), "This is your current location", Toast.LENGTH_SHORT).show();
+			
+		// Otherwise, these are markers from the database
 		} else {
 			b.putInt("id", Integer.parseInt(marker.getSnippet()));	// Marker Id
 			Intent intent = new Intent(MapActivity.this, UpdateLocationIsTaken.class);
@@ -503,7 +421,7 @@ public class MapActivity
 				int success = json.getInt(TAG_SUCCESS);
 
 				if (success == 1) {
-					// products found
+					// Location found
 					// Getting Array of Location
 					locations = json.getJSONArray(TAG_LOCATIONS);
 
@@ -520,21 +438,13 @@ public class MapActivity
 						availableSpotsId.add(id);
 						availableSpotsName.add(name);
 						availableSpots.add(new LatLng(latitude, longitude));
-
 					}
 				} else {
-//					// no products found
-//					// Launch Add New product Activity
-//					Intent i = new Intent(getApplicationContext(),
-//							NewProductActivity.class);
-//					// Closing all previous activities
-//					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//					startActivity(i);
+					// No location found
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-
 			return null;
 		}
 
@@ -550,12 +460,10 @@ public class MapActivity
             if (currentLocationMarkerAdded) {
             	myMap.addMarker(new MarkerOptions().position(currentLocation).snippet("Your current location").title("Current Location").icon(BitmapDescriptorFactory
         	            .fromResource(R.drawable.current_location)));
-//            	currentLocationMarkerAdded = false;
             }
             if (homeMarkerAdded) {
             	myMap.addMarker(new MarkerOptions().position(home).snippet("This is your home").title("Home").icon(BitmapDescriptorFactory
         	            .fromResource(R.drawable.home2)));
-//            	homeMarkerAdded = false;
             }
     		for (int i=0; i<availableSpots.size(); i++) {
     			check = bounds.contains(availableSpots.get(i));
@@ -564,7 +472,5 @@ public class MapActivity
     			}
     		}
 		}
-	
-	}
-	
+	}	
 }
