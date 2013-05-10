@@ -81,7 +81,7 @@ To do next 2 weeks:
    # Able to add markers on the map.
 
 == Week 6 ==
- * *Truong
+ * *Truong*
    # UI: Place marker on the map and store that marker to online database.
    # UI: Refresh button will load locations from database and put them as markers on the current map view.
    # UI: Mark the spot is taken (reserve) and refresh the map, the spot will disappear.
@@ -89,4 +89,3 @@ To do next 2 weeks:
    # UI: User is able to navigate from current location to the selected spot using the built-in Maps app or Navigation.
 
  * *Min Min*
-
