@@ -80,8 +80,13 @@ To do next 2 weeks:
    # Get current location working.
    # Able to add markers on the map.
 
-To do next week:
-  # UI - development registering parking spot with current location.
-      * reserve parking spot with user type in address.
-  # UI - user mode search available parking spot.
-  # Tap somewhere and find available parking spot around there. 
+== Week 6 ==
+ * *Truong
+   # UI: Place marker on the map and store that marker to online database.
+   # UI: Refresh button will load locations from database and put them as markers on the current map view.
+   # UI: Mark the spot is taken (reserve) and refresh the map, the spot will disappear.
+   # UI: Marker will only show up in current screen view instead of show up everywhere outside screen border to save phone memory. When user move to a different screen view, refresh button will bring up those available spots on that view.
+   # UI: User is able to navigate from current location to the selected spot using the built-in Maps app or Navigation.
+
+ * *Min Min*
+
