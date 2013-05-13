@@ -29,12 +29,14 @@ public class RegisterActivity extends Activity {
     EditText inputEmail;
     EditText inputPassword;
     EditText inputPasswordRepeat;
+    EditText inputHomeAddress;
     TextView registerErrorMsg;
     
     // Values for email and password at the time of the login attempt.
  	private String mEmail;
  	private String mPassword;
  	private String mPasswordRepeat;
+ 	private String mHomeAddress;
  
     // JSON Response node names
     private static String KEY_SUCCESS = "success";
@@ -62,6 +64,7 @@ public class RegisterActivity extends Activity {
 		inputEmail = (EditText) findViewById(R.id.registerEmail);
 		inputPassword = (EditText) findViewById(R.id.registerPassword);
 		inputPasswordRepeat = (EditText) findViewById(R.id.registerPasswordRepeat);
+		inputHomeAddress = (EditText) findViewById(R.id.homeAddress);
 		btnRegister = (Button) findViewById(R.id.btnRegister);
 		btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
 		registerErrorMsg = (TextView) findViewById(R.id.register_error);
@@ -136,6 +139,7 @@ public class RegisterActivity extends Activity {
 		mEmail = inputEmail.getText().toString();
 		mPassword = inputPassword.getText().toString();
 		mPasswordRepeat = inputPasswordRepeat.getText().toString();
+		mHomeAddress = inputHomeAddress.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
@@ -221,6 +225,7 @@ public class RegisterActivity extends Activity {
         protected String doInBackground(String... postParameters) {
             String name = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
+            String homeAddress = inputHomeAddress.getText().toString();
     
             String returnString = "";
             // call executeHttpPost method passing necessary parameters 
@@ -231,12 +236,13 @@ public class RegisterActivity extends Activity {
                     postParam.add(new BasicNameValuePair("tag", KEY_TAG));
                     postParam.add(new BasicNameValuePair("user_name",name));
                     postParam.add(new BasicNameValuePair("password",password));
+                    postParam.add(new BasicNameValuePair("home_address", homeAddress));
                     Log.d("password: ",password);
                     //String response = null;
                     
                     JSONObject response = jParser.makeHttpRequest(
-                                "http://thecity.sfsu.edu/~m2phyo/register.php", //remote server
-                                "POST", postParam);                                                             // POST method
+                                "http://thecity.sfsu.edu/~m2phyo/register1.php", 	// remote server
+                                "POST", postParam);									// POST method
          
                     // store the result returned by PHP script that runs MySQL query
                     String result = response.toString();  

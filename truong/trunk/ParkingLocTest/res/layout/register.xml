@@ -78,6 +78,17 @@
 	              android:password="true"
 	              android:singleLine="true"/>
 	        
+	        <!-- Home Address -->
+	        <TextView android:layout_width="fill_parent"
+	              android:layout_height="wrap_content"
+	              android:textColor="#372c24"
+	              android:text="Home Address (confidential)"
+	              android:layout_marginTop="10dip"/>/>
+	        <EditText android:id="@+id/homeAddress"
+	              android:layout_width="fill_parent"
+	              android:layout_height="wrap_content"
+	              android:singleLine="true"/>
+	        
 	        <!--  Error message -->
         	<TextView android:id="@+id/register_error"
                   android:layout_width="fill_parent"
