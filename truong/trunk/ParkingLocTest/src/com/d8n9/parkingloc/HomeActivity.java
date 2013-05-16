@@ -14,6 +14,8 @@ public class HomeActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
          
+        Bundle b = getIntent().getExtras();
+        
         TabHost tabHost = getTabHost();
          
         // Tab for Map
@@ -21,6 +23,7 @@ public class HomeActivity extends TabActivity {
         // setting Title and Icon for the Tab
         mapspec.setIndicator("Map", getResources().getDrawable(R.drawable.map_tab));
         Intent mapIntent = new Intent(this, MapActivity.class);
+        mapIntent.putExtras(b);
         mapspec.setContent(mapIntent);
          
         // Tab for List

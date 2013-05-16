@@ -105,6 +105,9 @@ public class MapActivity
 	// Bundle for transfering data between activities
 	Bundle b = new Bundle();
 	
+	Double homeLat;
+	Double homeLng;
+	
 	boolean homeMarkerAdded = false;
 	boolean currentLocationMarkerAdded = false;
 	
@@ -114,7 +117,7 @@ public class MapActivity
 	
 	static final LatLng USA = new LatLng(37.090240, -95.712891);
 	static final LatLng currentLocation = new LatLng(37.723886, -122.477067);
-	static final LatLng home = new LatLng(37.782426, -122.416223);
+	LatLng home;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +166,13 @@ public class MapActivity
 		
 		// Detect tap on marker's info window
 		myMap.setOnInfoWindowClickListener(this);
+		
+		// Get info from intent bundle
+		Bundle b = getIntent().getExtras();
+
+		homeLat = b.getDouble("home_lat");
+		homeLng = b.getDouble("home_lng");
+		home = new LatLng(homeLat, homeLng);
 		
 		// Home button on click
 		findViewById(R.id.home_button).setOnClickListener(new OnClickListener() {

@@ -44,6 +44,9 @@ public class LoginActivity extends Activity {
 	private String mEmail;
 	private String mPassword;
 	
+	// Bundle for transfering data between activities
+	Bundle b = new Bundle();
+	
 	// Progress Dialog
 	private ProgressDialog pDialog;
 	
@@ -202,8 +205,14 @@ public class LoginActivity extends Activity {
 	                int success = response.getInt(KEY_SUCCESS);
 	 
 	                if (success == 1) {
-	                	
-	    				Intent home = new Intent(getApplicationContext(), HomeActivity.class);
+	                	b.clear();
+	                	b.putString("username", response.getJSONArray("user").getJSONObject(0).getString("user_name"));
+	                	b.putString("password", response.getJSONArray("user").getJSONObject(0).getString("password"));
+	                	b.putDouble("home_lat", response.getJSONArray("user").getJSONObject(0).getDouble("home_loc_lat"));
+	                	b.putDouble("home_lng", response.getJSONArray("user").getJSONObject(0).getDouble("home_loc_lng"));
+	                	b.putString("home_add", response.getJSONArray("user").getJSONObject(0).getString("home_loc_add"));
+	            		Intent home = new Intent(getApplicationContext(), HomeActivity.class);
+	            		home.putExtras(b);
 	                    // Close all views before launching Home
 		                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		                startActivity(home);
