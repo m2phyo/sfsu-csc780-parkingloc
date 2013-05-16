@@ -194,12 +194,15 @@ public class LoginActivity extends Activity {
 	            // store the result returned by PHP script that runs MySQL query
 	            String result = response.toString();  
 	            Log.d("User :", result);
-	        
+	            //String homeLocID = response.getJSONArray("user").getJSONObject(0).getString("home_loc_id");
+	            //Log.d("homoeLocID:" , homeLocID);
+	            
 	            try {
 	            	// Checking for SUCCESS TAG
 	                int success = response.getInt(KEY_SUCCESS);
 	 
 	                if (success == 1) {
+	                	
 	    				Intent home = new Intent(getApplicationContext(), HomeActivity.class);
 	                    // Close all views before launching Home
 		                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
