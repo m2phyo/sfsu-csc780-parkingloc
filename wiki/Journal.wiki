@@ -89,8 +89,18 @@ To do next 2 weeks:
    # UI: User is able to navigate from current location to the selected spot using the built-in Maps app or Navigation.
 
  * *Min Min*
-   # Implemented and Deployed getLocation.php to get live data
+   * Implemented and Deployed getLocation.php to get live data
      * get - to get the locations of available parking spots
      * update - Update the location is taken or not taken
      * insert - insert the new location info.
      * check - check the parking spot is available or taken
+
+== Week 7 ==
+ * *Truong*
+
+
+ * *Min Min*
+   # Deployed chagePassword.php
+     * To handle the change password activity for current user and update database. 
+   # ChangePassActivity.java
+     * Activity to get user new password and communicate with server.
