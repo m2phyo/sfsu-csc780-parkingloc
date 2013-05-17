@@ -36,6 +36,7 @@ public class HomeActivity extends TabActivity {
         TabSpec accountspec = tabHost.newTabSpec("Account");
         accountspec.setIndicator("Account", getResources().getDrawable(R.drawable.account_tab));
         Intent accountIntent = new Intent(this, AccountActivity.class);
+        accountIntent.putExtras(b);
         accountspec.setContent(accountIntent);
          
         // Adding all TabSpec to TabHost

@@ -11,10 +11,16 @@ public class AccountActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account);
         
+        
         findViewById(R.id.change_password).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
+                Bundle b = getIntent().getExtras();
                 Intent changePass = new Intent(getApplicationContext(), ChangePassActivity.class);
+                changePass.putExtras(b);
                 startActivity(changePass);
+                finish();
+            	
+            	// NO ACTION FOR NOW
             }
         });
         

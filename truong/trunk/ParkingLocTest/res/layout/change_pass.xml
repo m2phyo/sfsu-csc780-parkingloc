@@ -41,7 +41,7 @@
 			android:password="true"
 			android:singleLine="true"/>
 		<!--  Error message -->
-       	<TextView android:id="@+id/register_error"
+       	<TextView android:id="@+id/change_password_error"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:textColor="#e30000"
