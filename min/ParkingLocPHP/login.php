@@ -22,7 +22,8 @@ if (isset($_POST['user_name']) && isset($_POST['password'])) {
     
     // get a user from users table
     //$result = mysqli_query("SELECT * FROM users WHERE user_name = '". $_POST["user_name"]."' AND password = '". $_POST["password"]."'");
-    $result = mysqli_query($db, "SELECT * FROM users WHERE user_name = '$name' AND password = '$password'");
+    $result = mysqli_query($db, "SELECT user_id, user_name, password, loc_latitude, loc_longitude, loc_address
+        FROM users JOIN location_info WHERE users.home_loc_id = loc_id AND user_name = '$name' AND password = '$password'");
 
     // check for empty result
     if (mysqli_num_rows($result) > 0) {
@@ -32,14 +33,17 @@ if (isset($_POST['user_name']) && isset($_POST['password'])) {
  
         while ($row = mysqli_fetch_array($result)) {
             // temp user array
-            $user = array();
-            $user["user_id"] = $row["user_id"];
-            $user["user_name"] = $row["user_name"];
-            $user["password"] = $row["password"];
-            $user["home_loc_id"] = $row["home_loc_id"];
- 
+            $location_info = array();
+            $location_info["user_id"] = $row["user_id"];
+            $location_info["user_name"] = $row["user_name"];
+            $location_info["password"] = $row["password"];
+            $location_info["home_loc_id"] = $row["home_loc_id"];
+            $location_info["home_loc_lat"] = $row["loc_latitude"];
+            $location_info["home_loc_lng"] = $row["loc_longitude"];
+            $location_info["home_loc_add"] = $row["loc_address"];
+            
             // push single user into final response array
-            array_push($response["user"], $user);
+            array_push($response["user"], $location_info);
         }
         
         // success
