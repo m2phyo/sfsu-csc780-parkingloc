@@ -51,7 +51,6 @@ public class LoginActivity extends Activity {
 	private ProgressDialog pDialog;
 	
 	TextView loginErrorMsg;      // TextView to show the result of MySQL query 
-	String returnString="";   // to store the result of MySQL query after decoding JSON
 	
 	// Creating JSON Parser object
 	JSONParser jParser = new JSONParser();
@@ -179,6 +178,8 @@ public class LoginActivity extends Activity {
             String name = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
     
+            String returnString="";   // to store the result of MySQL query after decoding JSON
+            
             // call executeHttpPost method passing necessary parameters 
             try {
 	            // declare parameters that are passed to PHP script
@@ -193,7 +194,8 @@ public class LoginActivity extends Activity {
 	            JSONObject response = jParser.makeHttpRequest(
 	            		"http://thecity.sfsu.edu/~m2phyo/login.php",	//remote server
 	            		"POST", postParam);								// POST method
-	 
+	            
+	        	
 	            // store the result returned by PHP script that runs MySQL query
 	            String result = response.toString();  
 	            Log.d("User :", result);

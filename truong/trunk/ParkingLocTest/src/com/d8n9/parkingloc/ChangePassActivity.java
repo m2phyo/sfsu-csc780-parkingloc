@@ -132,11 +132,11 @@ public class ChangePassActivity extends Activity {
         /**
          * After completing background task Dismiss the progress dialog
          * **/
-        protected void onPostExecute(String resultText) {
+        protected void onPostExecute(String changePasswordText) {
             // dismiss the dialog after getting all products
             pDialog.dismiss();
             try {
-                    changePasswordErrorMsg.setText(resultText);
+                    changePasswordErrorMsg.setText(changePasswordText);
             } catch(Exception e){
                     Log.e("log_tag","Error in Display!" + e.toString());;          
             }
