@@ -18,9 +18,6 @@ public class AccountActivity extends Activity {
                 Intent changePass = new Intent(getApplicationContext(), ChangePassActivity.class);
                 changePass.putExtras(b);
                 startActivity(changePass);
-                finish();
-            	
-            	// NO ACTION FOR NOW
             }
         });
         

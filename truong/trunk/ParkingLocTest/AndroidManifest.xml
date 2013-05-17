@@ -53,6 +53,7 @@
         <activity android:name="com.d8n9.parkingloc.MapActivity" />
         <activity android:name="com.d8n9.parkingloc.locationinfo.LocListActivity" />
         <activity android:name="com.d8n9.parkingloc.AccountActivity" />
+        <activity android:name="com.d8n9.parkingloc.ReservedActivity" />
         <activity android:name="com.d8n9.parkingloc.UpdateLocationIsTaken" />
         <activity android:name="com.d8n9.parkingloc.UpdateLocationToDb" />
         <activity
