@@ -99,7 +99,8 @@ To do next 2 weeks:
 
 == Week 7 ==
  * *Truong*
-
+   # Use Geocoder to convert user home address to longitude and latitude.
+   # Map is now display the correct Home marker of the user.
 
  * *Min Min*
    # Updated login.php
@@ -108,3 +109,10 @@ To do next 2 weeks:
      * To handle the change password activity for current user and update database. 
    # ChangePassActivity.java
      * Activity to get user new password and communicate with server.
+
+== Week 8 ==
+   # Reserved Tab:
+     * Show spot that is reserved by current user.
+     * User will be able to release the spot.
+     * Map will show up the spot again.
+     * Some messages will be displayed if user has no reserved spot.
