@@ -3,17 +3,25 @@ package com.d8n9.parkingloc;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
  
 public class HomeActivity extends TabActivity {
     /** Called when the activity is first created. */
+	
+	Bundle b;
+	Integer reserved_id;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
          
-        Bundle b = getIntent().getExtras();
+        b = getIntent().getExtras();
+        reserved_id = b.getInt("reserved_id");
+        
+        Log.d("Reserved ID in HomeActivity: ", reserved_id.toString());
         
         TabHost tabHost = getTabHost();
          
@@ -29,6 +37,7 @@ public class HomeActivity extends TabActivity {
         TabSpec listspec = tabHost.newTabSpec("Reserved");        
         listspec.setIndicator("Reserved", getResources().getDrawable(R.drawable.list_tab));
         Intent listIntent = new Intent(this, ReservedActivity.class);
+        listIntent.putExtras(b);
         listspec.setContent(listIntent);
          
         // Tab for Account

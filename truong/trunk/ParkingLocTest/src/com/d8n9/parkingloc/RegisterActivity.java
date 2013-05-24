@@ -257,10 +257,10 @@ public class RegisterActivity extends Activity {
 //                            // Close all views before launching Home
 //	                        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //	                        startActivity(home);
-	                        returnString += "\n" + response.getString("message");
+	                        returnString = "\n" + response.getString("message");
                         } else {
                                 // no products found
-                        returnString += "\n" + response.getString("message");
+                        returnString = "\n" + response.getString("message");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

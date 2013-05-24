@@ -128,10 +128,10 @@ public class UpdateLocationToDb extends Activity {
 	                int success = response.getInt(KEY_SUCCESS);
 	 
 	                if (success == 1) {
-	                	returnString += "\n" + response.getString("message");
+	                	returnString = "\n" + response.getString("message");
 	                } else {
 	        		// no products found
-	                returnString += "\n" + response.getString("message");
+	                returnString = "\n" + response.getString("message");
 	                }
 	            } catch (JSONException e) {
 	            	e.printStackTrace();

@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,7 +67,7 @@ public class MapActivity
 	private GoogleMap myMap;
 	
 	Location myLocation;
-	TextView tvLocInfo;
+//	TextView tvLocInfo;
 	
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
@@ -103,6 +104,7 @@ public class MapActivity
 	
 	// Bundle for transfering data between activities
 	Bundle b = new Bundle();
+	Bundle bForReservation;
 	
 	Double homeLat;
 	Double homeLng;
@@ -123,8 +125,10 @@ public class MapActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map);
 		
+		bForReservation = getIntent().getExtras();
+		
 		// Small text view on top of the map
-		tvLocInfo = (TextView)findViewById(R.id.tv_location);
+//		tvLocInfo = (TextView)findViewById(R.id.tv_location);
 		
 		// Loading map fragments
 		FragmentManager myFragmentManager = getFragmentManager();
@@ -258,8 +262,8 @@ public class MapActivity
 			double lat = location.getLatitude();
 			double lon = location.getLongitude();
 			
-			tvLocInfo.setText(	"lat: " + lat + "\n" +
-								"lon: " + lon);
+//			tvLocInfo.setText(	"lat: " + lat + "\n" +
+//								"lon: " + lon);
 			
 			LatLng latlng= new LatLng(location.getLatitude(), location.getLongitude());
 			myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 13));
@@ -346,7 +350,7 @@ public class MapActivity
 	// Action after camera view change on the map
 	@Override
 	public void onCameraChange(CameraPosition position) {
-		tvLocInfo.setText("CameraPosition: " + position);
+//		tvLocInfo.setText("CameraPosition: " + position);
 	}
 
 	// Action on click on marker's info window
@@ -359,6 +363,7 @@ public class MapActivity
 		
 		// Clear and put variables into bundle
 		b.clear();
+		b.putInt("user_id", bForReservation.getInt("user_id"));
 		b.putString("name", marker.getTitle());	// Marker Name
 		b.putDouble("currLat", currLat);	// currentLocation latitude
 		b.putDouble("currLng", currLng);	// currentLocation longitude

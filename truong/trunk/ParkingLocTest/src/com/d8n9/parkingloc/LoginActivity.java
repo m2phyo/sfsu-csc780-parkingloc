@@ -208,11 +208,14 @@ public class LoginActivity extends Activity {
 	 
 	                if (success == 1) {
 	                	b.clear();
+	                	b.putInt("user_id", response.getJSONArray("user").getJSONObject(0).getInt("user_id"));
 	                	b.putString("username", response.getJSONArray("user").getJSONObject(0).getString("user_name"));
 	                	b.putString("password", response.getJSONArray("user").getJSONObject(0).getString("password"));
 	                	b.putDouble("home_lat", response.getJSONArray("user").getJSONObject(0).getDouble("home_loc_lat"));
 	                	b.putDouble("home_lng", response.getJSONArray("user").getJSONObject(0).getDouble("home_loc_lng"));
 	                	b.putString("home_add", response.getJSONArray("user").getJSONObject(0).getString("home_loc_add"));
+	                	b.putInt("reserved_id", response.getJSONArray("user").getJSONObject(0).getInt("reserved_id"));
+	                	
 	            		Intent home = new Intent(getApplicationContext(), HomeActivity.class);
 	            		home.putExtras(b);
 	                    // Close all views before launching Home
@@ -220,7 +223,7 @@ public class LoginActivity extends Activity {
 		                startActivity(home);
 	                } else {
 	        		// no products found
-	                returnString += "\n" + response.getString("message");
+	                returnString = "\n" + response.getString("message");
 	                }
 	            } catch (JSONException e) {
 	            	e.printStackTrace();

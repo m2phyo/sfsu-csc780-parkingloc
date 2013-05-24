@@ -37,9 +37,12 @@ public class UpdateLocationIsTaken extends Activity {
 	// Creating JSON Parser object
 	JSONParser jParser = new JSONParser();
 	
+	Bundle b;
+	
 	Double locLat;
 	Double locLong;
 	Integer id;
+	Integer user_id;
 	
 	//JSON Response keys
 	private static String KEY_SUCCESS = "success";
@@ -51,8 +54,10 @@ public class UpdateLocationIsTaken extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.update_location_is_taken);
 		
-		Bundle b = getIntent().getExtras();
+		b = getIntent().getExtras();
+		
 		id = b.getInt("id");
+		user_id = b.getInt("user_id");
 		String name = b.getString("name");
 		final Double currLat = b.getDouble("currLat");
 		final Double currLng = b.getDouble("currLng");
@@ -126,6 +131,7 @@ public class UpdateLocationIsTaken extends Activity {
 	            
 	            postParam.add(new BasicNameValuePair("tag", KEY_TAG));
 	            postParam.add(new BasicNameValuePair("loc_id",id.toString()));
+	            postParam.add(new BasicNameValuePair("user_id", user_id.toString()));
 	            
 	            //String response = null;
 	            
@@ -142,10 +148,10 @@ public class UpdateLocationIsTaken extends Activity {
 	                int success = response.getInt(KEY_SUCCESS);
 	 
 	                if (success == 1) {
-	                	returnString += "\n" + response.getString("message");
+	                	returnString = "\n" + response.getString("message");
 	                } else {
 	        		// no products found
-	                returnString += "\n" + response.getString("message");
+	                returnString = "\n" + response.getString("message");
 	                }
 	            } catch (JSONException e) {
 	            	e.printStackTrace();
