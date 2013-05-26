@@ -72,21 +72,10 @@
 	              android:layout_height="wrap_content"
 	              android:textColor="#372c24"
 	              android:text="Repeat your password"/>
-	        <EditText android:id="@+id/registerPasswordRepeat"
+	        <EditText android:id="@+id/repeat_password"
 	              android:layout_width="fill_parent"
 	              android:layout_height="wrap_content"
 	              android:password="true"
-	              android:singleLine="true"/>
-	        
-	        <!-- Home Address -->
-	        <TextView android:layout_width="fill_parent"
-	              android:layout_height="wrap_content"
-	              android:textColor="#372c24"
-	              android:text="Home Address (confidential)"
-	              android:layout_marginTop="10dip"/>/>
-	        <EditText android:id="@+id/homeAddress"
-	              android:layout_width="fill_parent"
-	              android:layout_height="wrap_content"
 	              android:singleLine="true"/>
 	        
 	        <!--  Error message -->
@@ -111,7 +100,7 @@
 	        <Button android:id="@+id/btnLinkToLoginScreen"
 	              android:layout_width="fill_parent"
 	              android:layout_height="wrap_content"
-	              android:text="Back to Login"
+	              android:text="Has account? Login here"
 	              android:gravity="center"
 	              android:textSize="20dip"
 	              android:textColor="#025f7c"/>

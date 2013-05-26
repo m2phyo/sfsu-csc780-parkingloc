@@ -3,6 +3,10 @@ package com.d8n9.parkingloc;
 import com.d8n9.parkingloc.JSONParser;
 
 import com.d8n9.parkingloc.R;
+import com.d8n9.parkingloc.R.id;
+import com.d8n9.parkingloc.R.layout;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.http.NameValuePair;
@@ -12,11 +16,13 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -31,28 +37,31 @@ public class LoginActivity extends Activity {
 	EditText inputEmail;
 	EditText inputPassword;
 	
+	// Keep track of the login task to ensure we can cancel it if requested.
+	private loginProcess mAuthTask = null;
+	
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
 	private String mPassword;
 	
-	// Bundle for transfering data between activities
-	Bundle b = new Bundle();
-	
 	// Progress Dialog
 	private ProgressDialog pDialog;
 	
-	TextView loginErrorMsg;      // TextView to show the result of MySQL query 
-	
-	// Web service address
-	private static String webURL = "http://thecity.sfsu.edu/~m2phyo/login.php";
+	TextView tv;      // TextView to show the result of MySQL query 
+	String returnString="";   // to store the result of MySQL query after decoding JSON
 	
 	// Creating JSON Parser object
 	JSONParser jParser = new JSONParser();
 	
 	//JSON Response keys
 	private static String KEY_SUCCESS = "success";
+	private static String KEY_MESSAGE = "message";
+	private static String KEY_NAME = "user_name";
 	private static String KEY_TAG = "login";
-	// products JSONArray
+	private static String KEY_USER = "user";
+	private static String KEY_ID = "user_id";
+
+    // products JSONArray
     JSONArray user = null;
         
     @Override
@@ -64,9 +73,8 @@ public class LoginActivity extends Activity {
         inputEmail = (EditText) findViewById(R.id.loginEmail);
         inputPassword = (EditText) findViewById(R.id.loginPassword);
         logButton = (Button) findViewById(R.id.btnLogin);
-        loginErrorMsg = (TextView) findViewById(R.id.login_error);
+        tv = (TextView) findViewById(R.id.login_error);
         
-        // Login button
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +82,7 @@ public class LoginActivity extends Activity {
             }
         });
 
-        // Register button
+        // Link to Register Screen
         findViewById(R.id.btnLinkToRegisterScreen).setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
@@ -133,72 +141,73 @@ public class LoginActivity extends Activity {
 			// form field with an error.
 			focusView.requestFocus();
 		} else {
-			// Start login process
+			// Show a progress spinner, and kick off a background task to
+			// perform the user login attempt.
+//			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+//			showProgress(true);
+//			mAuthTask = new UserLoginTask();
+//			mAuthTask.execute((Void) null);
 			new loginProcess().execute();
 		}
 	}
     
     /**
-     * Login in background using Async Task
+     * Background Async Task
      * */
     class loginProcess extends AsyncTask<String, String, String> {
     	
-        // Pre execute
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
         @Override
         protected void onPreExecute() {
 			super.onPreExecute();
 			pDialog = new ProgressDialog(LoginActivity.this);
-			pDialog.setMessage("Login... Please wait...");
+			pDialog.setMessage("Login.... Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
         }
         
-        // Execute in background
+        /**
+         * getting result from url
+         * */
+        @Override
         protected String doInBackground(String... postParameters) {
             String name = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
     
-            String returnString="";	// To store the result of MySQL query after decoding JSON
-            
-            // Call executeHttpPost method passing necessary parameters 
+            // call executeHttpPost method passing necessary parameters 
             try {
-	            // Declare parameters that are passed to PHP script
+	            // declare parameters that are passed to PHP script
 	            List<NameValuePair> postParam = new ArrayList<NameValuePair>();
+	            
 	            postParam.add(new BasicNameValuePair("tag", KEY_TAG));
 	            postParam.add(new BasicNameValuePair("user_name",name));
 	            postParam.add(new BasicNameValuePair("password",password));
+	            Log.d("password: ",password);
+	            //String response = null;
 	            
-	            // Post method
-	            JSONObject response = jParser.makeHttpRequest(webURL, "POST", postParam);
-	            
-	            // Store the result returned by PHP script that runs MySQL query
+	            JSONObject response = jParser.makeHttpRequest(
+	            		"http://thecity.sfsu.edu/~m2phyo/login.php",	//remote server
+	            		"POST", postParam);								// POST method
+	 
+	            // store the result returned by PHP script that runs MySQL query
 	            String result = response.toString();  
-	            Log.d("Login Result: ", result);
-	            
+	            Log.d("User :", result);
+	        
 	            try {
 	            	// Checking for SUCCESS TAG
 	                int success = response.getInt(KEY_SUCCESS);
 	 
 	                if (success == 1) {
-	                	// Clear the bundle and add data
-	                	b.clear();
-	                	b.putInt("user_id", response.getJSONArray("user").getJSONObject(0).getInt("user_id"));
-	                	b.putString("username", response.getJSONArray("user").getJSONObject(0).getString("user_name"));
-	                	b.putString("password", response.getJSONArray("user").getJSONObject(0).getString("password"));
-	                	b.putDouble("home_lat", response.getJSONArray("user").getJSONObject(0).getDouble("home_loc_lat"));
-	                	b.putDouble("home_lng", response.getJSONArray("user").getJSONObject(0).getDouble("home_loc_lng"));
-	                	b.putString("home_add", response.getJSONArray("user").getJSONObject(0).getString("home_loc_add"));
-	                	b.putInt("reserved_id", response.getJSONArray("user").getJSONObject(0).getInt("reserved_id"));
-	                	
-	            		Intent home = new Intent(getApplicationContext(), HomeActivity.class);
-	            		home.putExtras(b);
+	    				Intent home = new Intent(getApplicationContext(), HomeActivity.class);
 	                    // Close all views before launching Home
-		                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		                startActivity(home);
+	                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	                startActivity(home);
 	                } else {
 	        		// no products found
-	                returnString = "\n" + response.getString("message");
+	                returnString += "\n" + response.getString("message");
 	                }
 	            } catch (JSONException e) {
 	            	e.printStackTrace();
@@ -208,16 +217,27 @@ public class LoginActivity extends Activity {
         	}
             return returnString;
         }
-
-		// Post execute
-		protected void onPostExecute(String returnText) {
+        
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String resultText) {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			try {
-				loginErrorMsg.setText(returnText);
+				tv.setText(resultText);
 			} catch(Exception e){
-				Log.e("log_tag","Error: " + e.toString());;          
+				Log.e("log_tag","Error in Display!" + e.toString());;          
 			}
 		}
 	}
+    
+    
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.login, menu);
+//        return true;
+//    }
+    
 }
